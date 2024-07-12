@@ -1,0 +1,108 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ; 
+if ( ! $App->User()->isManager() ) 
+	return $Html->NotManagerAlert(); 
+$delete = $App->SilentCall( 'Commerce' , 'Managers' , 'Debtors' , 'Delete' );
+$shop = isset( $shop ) ? $shop : $App->input->shid ;
+if( is_array( $shop ) && isset( $shop[ 'code' ] ) )
+	$shop = $shop[ 'code' ];
+$user = isset( $user ) ? $user : $App->input->uid ;
+if( is_array( $user ) && isset( $user[ 'writer' ] ) )
+	$user = $user[ 'writer' ];
+if( ! $user )
+	return $Html->Alert( 'Please Select A User First' , 'info' );
+$bLink = "Commerce/Managers/my-shops/my-debtors" ;
+$lLink = $bLink . "/list/shid:" . $shop ;
+$eLink = $bLink . "/edit/shid:" . $shop . "/uid:" . $user ; ?>
+<div class="col-xs-12 padding5">
+
+	<div class="col-xs-12 padding5">
+
+		<div class="col-xs-12 padding0">
+
+			<h3 class="col-xs-12 alert-info" style="padding:15px;margin-top:15px;">
+
+				<?php $Html->pTranslate( 'Delete Debt' ); ?>
+
+			</h3>
+
+		</div>
+
+		<div class="col-xs-12 padding5">
+
+			<?php if( $delete === true ) : ?>
+			<div class="col-xs-12 padding10 alert-success">
+				<?php $Html->pTranslate( 'Delete Successfull' ); ?>
+			</div>
+			<div class="col-xs-12 padding10">
+
+				<a href="<?php $Html->EchoLink( $lLink ); ?>" 
+					class="btn btn-success btn-lg">
+
+					<?php $Html->pTranslate( 'Go Back' ); ?>
+
+				</a>
+
+			</div>
+			<?php elseif( $delete === false ) : // Error ?>
+			<div class="col-xs-12 padding10 alert-warning">
+				<?php $Html->pTranslate( 'Please Select Shop/User' ); ?>
+			</div>
+			<div class="col-xs-12 padding10">
+
+				<a href="<?php $Html->EchoLink( $lLink ); ?>" 
+					class="btn btn-success btn-lg">
+
+					<?php $Html->pTranslate( 'Go Back' ); ?>
+
+				</a>
+
+			</div>
+			<?php elseif( is_array( $delete ) ) : ?>
+			<h3 class="col-xs-12 padding10 alert-danger">
+				<?php $Html->pTranslate( 'Please Confirm Deletion' ); ?>
+			</h3>
+			<div class="col-xs-12 padding10">
+
+				<div class="col-xs-12 padding5">
+				<?php $profile = $App->SilentCall( 'User' , 'Profile'
+					, [ 'UserCode' => $delete[ 'user' ] ] ); 
+				$Html->Call( 'User' ,'Profile' ,'Id' , [ 'Profile' => $profile ]); ?>
+				</div>
+
+				<h3 class="col-xs-12 padding5 text-center" style="margin:10px;">
+
+					<?php print Ted\HumanPrice( $delete['amount'] ) . " " ; 
+					$Html->pTranslate( 'Toman' ); ?>
+
+				</h3>
+
+				<form class="col-xs-12 padding5" style="margin:10px;">
+					<?php $Html->WriteInput( 'shid' , 'hidden' , $shop );?>
+					<?php $Html->WriteInput( 'uid' , 'hidden' , $user );?>
+					<?php $Html->WriteInput( 'confirm' , 'hidden' , 1 );?>
+
+					<button class="btn btn-warning btn-lg">
+
+						<?php $Html->pTranslate( 'DELETE' ); ?>
+
+					</button>
+
+					 &#160; &#160; 
+
+					<a href="<?php $Html->EchoLink( $lLink ); ?>" 
+						class="btn btn-success btn-lg">
+
+						<?php $Html->pTranslate( 'Go Back' ); ?>
+
+					</a>
+
+				</form>
+
+			</div>
+			<?php endif; ?>
+
+		</div>
+
+	</div>
+
+</div>

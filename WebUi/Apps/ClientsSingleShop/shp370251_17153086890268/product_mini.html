@@ -1,0 +1,55 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+$Product = isset( $Product ) ? $Product : $App->input->pid ;
+if( ! isset( $shop ) || ! is_array( $shop ) )
+    return $Html->Alert( 'No Shop Received' , 'warning' );
+if( is_string( $Product ) ) 
+	$Product = $App->COMMERCE()->PullProducts( null , null , $Product );
+if ( ! is_array( $Product ) || empty( $Product ) )  
+	return $Html->NotFoundedAlert();
+$isMarketPlaceShop = MarketsHandler::isMarketPlaceShop( $shop );
+$com = $App->COMMERCE();
+$Poster = $Html->GetPoster( $Product );
+if( ! $Poster ){
+	$template = ( ! isset( $Product['template'] ) ) ? null :
+	    $App->COMMERCE()->ExecuteDataActionsUnlimited( 
+		    "commerce_temps" , [ '*' ] , [ 'code' => $Product['template'] ] , null , false );
+    if( $template )
+        $Poster = $Html->GetPoster( $template );
+} if( ! $Poster )
+	$Poster = $Html->GetDrawable( "img_commerce_products.png" ) ; 
+$inCart = isset( $_COOKIE[ shid . '__' . $Product['code'] ] ) ? $_COOKIE[ shid . '__' . $Product['code'] ] : 0 ;?>
+<div class="col-xs-12 padding1 product-view" style='margin:5px 0px;'>
+    <?php $plink = 'Apps/ClientsSingleShop/' . shid . '/product_view/pid:' . $Product['code'] ; ?>
+    <a href="<?php $html->EchoLink( $plink ); ?>">
+    	<div class="col-xs-12 padding0 product-poster">
+    		<img src="<?php print $Poster; ?>" class="img img-thumbnail">
+    	</div>
+	</a>
+	<div class="col-xs-12 padding0 <?php $Html->EchoDir(); ?>"
+		style="padding-top:7px;text-align:center;">
+        <a href="<?php $html->EchoLink( $plink ); ?>">
+    	    <span class='col-xs-12 padding1' style='display:block;'>
+    	        <b><?php print $Product[ "title" ] ; ?></b>
+    	    </span>
+	    </a>
+		<span class='col-xs-12 padding5' style="font-weight:bolder;display:block;"> 
+	        <?php $price = $com->CalcRealPrice( $Product );
+	        print Ted\HumanPrice( $price ) ; print ' ' ; $Html->pTranslate( 'toman' ); ?>
+	    </span>
+		<span class='col-xs-12 padding5' style='display:block;'>
+		    <?php if( ! $Product['uCount'] ) : ?>
+		    <button class="btn btn-warning btn-lg disable" disabled=''>
+	            <?php $Html->pTranslate( 'Item Finished' ); ?>
+	        </button>
+		    <?php elseif( $inCart >= 1 ) : ?>
+		    <button class="btn btn-info btn-lg disable" disabled=''>
+	            <?php $Html->pTranslate( 'Already In Cart' ); ?>
+	        </button>
+		    <?php else : ?>
+		    <button class="btn btn-success btn-lg" onclick="addItemToCart( '<?php print $Product['code'] ; ?>' );">
+	            <?php $Html->pTranslate( 'Add To Cart' ); ?>
+	        </button>
+	        <?php endif; ?>
+	    </span>
+	</div>
+</div>

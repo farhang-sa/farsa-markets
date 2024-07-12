@@ -1,0 +1,90 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->COMMERCE()->isManager() ) return $Html->NotManagerAlert(); ?>
+<div class="col-xs-12 padding0" style="height:100%;overflow:hidden;overflow-y:auto;">
+
+	<?php $Action = is_string( $App->input->{"my-shops"} ) ? 
+		$App->input->{"my-shops"} : "shops" ;
+	$Action = strtolower( $Action ) ;
+	
+	switch ( $Action ) :
+
+		case 'send-shop' :
+		case 'add-shop':
+		case 'send' :
+
+			$Html->Call( "commerce" , "Managers" , "shops" , "send" );
+
+		break;
+		case 'edit-shop':
+		case 'alter-shop':
+		case 'change-shop':
+		case 'edit' :
+
+			$Html->Call( "commerce" , "Managers" , "shops" , "edit" );
+
+		break;
+		case 'view-shop':
+		case 'see-shop':
+		case 'look-shop':
+		case 'view' :
+
+			$Html->Call( "commerce" , "Managers" , "shops" , "view" );
+
+		break;		
+		case 'manage-agents' :
+		case 'my-agents':
+
+			$Html->Call( "commerce" , "Managers" , "Agents" );
+
+		break;
+		case 'view-factures':
+		case 'see-factures':
+		case 'look-factures':
+		case 'my-factures':
+		case 'factures' :
+
+			$Html->Call( "commerce" , "Managers" , "factures" , "list" );
+
+		break;
+		case 'view-coupons':
+		case 'see-coupons':
+		case 'look-coupons':
+		case 'my-coupons':
+		case 'coupons' :
+
+			$Html->Call( "commerce" , "Managers" , "coupons" , "list" );
+
+		break;
+		case 'my-debtors':
+		case 'debtors' :
+
+			$Html->Call( "commerce" , "Managers" , "debtors" , "debtors" );
+
+		break;
+		case 'delete' :
+		case 'remove' :
+		case 'del' :
+		case 'unlink' :
+		case 'delete-shop':
+		case 'del-shop':
+		case 'remove-shop':
+
+			$Html->Call( "commerce" , "Managers" , "shops" , "delete" );
+
+		break;
+		case 'list-items':
+		case 'list-products':
+		
+		    $Html->Call( "commerce" , "Managers" , "shops" , "list_products" );
+		    
+		break;
+		case 'shops':
+		case 'my-shops':
+		default :
+
+			$Html->Call( "commerce" , "Managers" , "shops" , "list" );
+
+		break;
+	endswitch ; ?>
+
+</div>

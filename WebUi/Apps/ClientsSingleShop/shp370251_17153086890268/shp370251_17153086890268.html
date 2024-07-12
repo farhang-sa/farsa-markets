@@ -1,0 +1,40 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+$com = $App->COMMERCE();
+$products = $com->PullProducts( shid , shid );
+if( ! $products )
+    return $Html->Alert( 'No Products Found' , 'warning' );
+if( isset( $products['code'] ) )
+    $products = array( $products );
+$shop = $com->PullShop( shid ); ?>
+<style>
+.product-view-holder a {
+    font-size:17px;
+    font-weight:normal;
+} .product-view-holder a:hover {
+    font-size:17px;
+    font-weight:normal;
+} 
+</style>
+<script>
+var login = <?php print $App->User( 'login' ) ? 'true' : 'false' ; ?> ;
+function addItemToCart( itemCode ){
+    if( ! login ){
+        window.location.href = "<?php $Html->EchoLink( 'Web/Shopping' ); ?>" ;
+    } else {
+        var itemName = '<?php print shid ; ?>__' + itemCode ;
+        createCookie( itemName , 1 , 2 );
+        alert( '<?php $Html->pTranslate( "Item Added To Cart" ); ?>' );
+        window.location.href = "<?php $Html->EchoLink( 'Web/Shopping/View:cart/tag:' . shid ); ?>" ;
+    }
+}
+</script>
+<div class='col-xs-12 padding5 products-list-holder'>
+    <?php foreach( $products as $product ): ?>
+    <div class="col-xs-6 col-sm-4 col-md-3 padding1 product-item">
+        
+        <?php $Html->Call( 'Apps' , 'ClientsSingleShop' , shid , 
+            'product_mini' , [ 'Product' => $product , 'shop' => $shop ] ); ?>
+        
+    </div>
+    <?php endforeach ; ?>
+</div>

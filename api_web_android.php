@@ -1,0 +1,1 @@
+<?php define( 'TPath_Index' , basename( __FILE__ ) ); include_once 'api_web.php' ; ?>

@@ -1,0 +1,94 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->User( "admin" ) )
+	return $Html->NotFoundedAlert( 'Access Denied !' );
+$ActionName = isset( $ActionName ) ? $ActionName : "panel" ;
+$ActionName = $App->input->{$ActionName} ;
+$ActionName = is_string( $ActionName ) ? $ActionName : "manage" ;
+$Action = isset( $Action ) ? $Action : $ActionName ;
+
+switch ( $Action ) :
+	case 'managers' :
+	case 'view-managers':
+	case 'view-managers-list':
+
+		$Html->Call( "commerce" , "Admins" , "managers-list" );
+
+	break;
+	case 'manage-mall-subjects':
+
+		$Html->Call( "commerce" , "Admins" , 'commerce-mall-subjects' );
+
+	break;
+	case 'manage-shop-subjects':
+
+		$Html->Call( "commerce" , "Admins" , 'commerce-shop-subjects');
+
+	break;
+	case 'manage-definitions':
+
+		$Html->Call( "commerce" , "Admins" , 'commerce-definitions');
+
+	break;
+	case 'manage' :
+	case 'settings' :
+	case 'manage-commerce' :
+	case 'manage-settings' :
+	case 'commerce-settings' :
+	default :
+
+		$Definition = array(
+			"onsite_payment"	=> [ "checkbox" , "On-Site Payment" ] ,
+			"tax_behavior_msg"  => "Selecte Tax Behavior" ,
+			"tax_behavior"		=> [ "select" , array(
+			    "Seprate" => "Separate Item From Products" ,
+			    "Attached" => "Attach Tax To Products" 
+			) , "form-control input input-lg" ] ,
+			"message1"          => "Default VatTax Percentage" ,
+			"tax_percentage" 	=> [ "number" , null , "Goverment Tax" ] ,
+			"message2"          => "Default Profit Percentage" ,
+			"profit_percentage" => [ "number" , null , 
+				"Clones Profit Percentage" , null , null , "step='0.01'"] ,
+			"message3"          => "Default Software Cost" ,
+			"software_cost" 	=> [ "number" , null , "Software Cost" ] ,
+			"message4"          => "Default Software Cost Percentage" ,
+			"software_perc" 	=> [ "number" , null , 
+			    "Software Percentage Cost"  , null , null , "step='0.01'"] ,
+			"message5"          => "Select Payment GateWay" ,
+			"payment_system"    => [ "select" , array(
+			    "PayDotIR" => "Pay.IR" ,
+			    "ZarinPal" => "Zarin Pal" ,
+			    "NextPay" => "Next Pay" 
+			) , "form-control input input-lg" ] ,
+			"message6"          => "Active Locations List" ,
+		); if( $App->input->commerce_settings ) 
+			foreach ( $Definition as $key => $value ) 
+				if( ! isset( $App->input->commerce_settings[ $key ] ) )
+					$App->input->commerce_settings[ $key ] = false ;
+		$Settings = $App->SilentCall( "System" , "admins" , "Settings" , 
+			[ "settings_name" => "Commerce" , 
+				"Settings" => $App->input->commerce_settings ] ); ?>
+		<div class="col-xs-12padding5">
+			<div class="col-xs-12 alert alert-info">
+				<?php $Html->pTranslate( "Commerce Settings" ); ?>
+			</div>
+			<form method="POST">
+			<?php $Html->ExecuteDefinition( 
+				'commerce_settings' , $Definition , $Settings );?>
+			<textarea class="input input-lg form-control ltr" 
+				placeholder="Active Locations List" 
+					name="commerce_settings[active_locations]"><?php
+			if( isset( $Settings[ 'active_locations' ] ) ) :
+				$Action = $App->COMMERCE()->JSON_str_to_array( 
+					$Settings[ 'active_locations' ] , true ) ;
+				print $App->COMMERCE()->JSON_array_to_str( $Action , true ) ;
+			endif;
+			?></textarea>
+			<div class="col-xs-12 padding5">&#160;</div>
+			<input type="submit" value="<?php $Html->pTranslate( 'Save Settings' ); ?>"
+				class="btn btn-lg btn-primary" />
+			</form>
+		</div>
+		<?php
+		
+	break;
+endswitch ; ?>

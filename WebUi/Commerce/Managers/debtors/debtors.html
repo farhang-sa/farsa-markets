@@ -1,0 +1,79 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->COMMERCE()->isManager() ) return $Html->NotManagerAlert(); ?>
+<div class="col-xs-12 padding0" style="height:100%;overflow:hidden;overflow-y:auto;">
+
+	<?php $Action = $App->input->search([ "debtors" , "my-debtors" ]) ;
+	$Action = $Action ? $Action : "list" ;
+	$Action = strtolower( $Action ) ;
+	
+	switch ( $Action ) :
+
+		case 'send-debtor' :
+		case 'add-debtor':
+		case 'new-debtor':
+		case 'send-debtors' :
+		case 'add-debtors':
+		case 'new-debtors':
+		case 'send' :
+		case 'add' :
+		case 'new':
+
+			$Html->Call( "commerce" , "Managers" , "debtors" , "send" );
+
+		break;
+		case 'edit-debtor':
+		case 'alter-debtor':
+		case 'change-debtor':
+		case 'edit-debtors':
+		case 'alter-debtors':
+		case 'change-debtors':
+		case 'edit' :
+		case 'alter' :
+		case 'change' :
+
+			$Html->Call( "commerce" , "Managers" , "debtors" , "edit" );
+
+		break;
+		case 'view-debtor':
+		case 'see-debtor':
+		case 'look-debtor':
+		case 'view-debtors':
+		case 'see-debtors':
+		case 'look-debtors':
+		case 'view' :
+		case 'see' :
+		case 'look' :
+
+			$Html->Call( "commerce" , "Managers" , "debtors" , "view" );
+
+		break;
+		case 'delete' :
+		case 'remove' :
+		case 'del' :
+		case 'unlink' :
+		case 'delete-shop':
+		case 'del-shop':
+		case 'remove-shop':
+
+			$Html->Call( "commerce" , "Managers" , "debtors" , "delete" );
+
+		break;
+		case 'total' :
+		case 'total-demands' :
+		case 'total-amount' :
+
+			$Html->Call( "commerce" , "Managers" , "debtors" , "total" );
+
+		break;
+ 		case 'my-debtors':
+		case 'list-debtors' :
+		case 'debtors':
+		case 'list' :
+		default :
+
+			$Html->Call( "commerce" , "Managers" , "debtors" , "list" );
+
+		break;
+	endswitch ; ?>
+
+</div>

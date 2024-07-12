@@ -1,0 +1,80 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->COMMERCE()->isManager() ) 
+	return $Html->NotManagerAlert();
+$shop = isset( $shop ) ? $shop : $App->input->shid ;
+if( is_string( $shop ) )
+	$shop = $App->COMMERCE()->LoadShop( $shop );
+if ( ! is_array( $shop ) || empty( $shop ) ) 
+	return $Html->NotFoundedAlert() ;
+if ( ! $App->User()->isOwner( $shop ) ) 
+	return $Html->NotOwnerAlert();
+/*$Poster = isset( $shop[ 'poster' ] ) ? $shop[ 'poster' ] : null ;
+if( $Poster )
+	$Poster = $Html->webMedia(null , $Poster , TPath_Default_AppData) ;*/
+$isTemplatingShop = isset( $shop[ 'subjects' ] ) ? $shop[ 'subjects' ] : array();
+$isTemplatingShop = ( isset( $isTemplatingShop['products_template'] ) ) ? true : false ; ?>
+<div class="col-xs-12 padding0 shop-view <?php print $shop["code"];?> 
+	<?php $Html->EchoDir();?> <?php $Html->EchoAlign();?>" >
+
+	<div class="col-xs-12 padding0 <?php $Html->EchoDir();?>">
+
+		<?php $Html->Call( 'commerce' ,'shops' ,'details' ,[ 'shop' => $shop ] ); ?>
+
+	</div>
+
+	<div class="col-xs-12 padding10 shop-edit-options">
+		<?php /* if ( $Poster ) :  ?>
+		<div style='position:absolute;top:0px;left:0px;
+			bottom:0px;right:0px;opacity:0.5;background-repeat:no-repeat;
+			background-position: center;background-size:cover;
+			background-image:url("<?php print $Poster ; ?>");'>
+		</div>
+		<?php  endif ; */ ?>
+		<?php $A = array(
+		'Commerce/Managers/my-shops/view/shid:' 	. $shop['code'] => 
+			[ 'View Shop' , 'eye-open' , 'primary' ] ,
+		'Commerce/Managers/my-shops/edit/shid:' 	. $shop['code'] => 
+			[ 'Edit Shop' , 'edit' , 'success' ] ,
+		'Commerce/Managers/my-sections/shid:' 		. $shop['code'] =>
+			[ 'Manage Sections' , 'list' , 'primary' ] ,
+		'Commerce/Managers/my-sections/send/shid:' 	. $shop['code'] =>
+			[ 'Create A New Section' , 'plus' , 'success' ] ,
+		'Commerce/Managers/my-products/shid:' 		. $shop['code'] =>
+			[ 'Manage Products' , 'list' , 'primary' ] ,
+		'Commerce/Managers/my-products/send/shid:' 	. $shop['code'] =>
+			[ 'Send A New Product' , 'plus' , 'success' ] ,
+		'Commerce/Managers/my-shops/factures/shid:' . $shop['code'] =>
+			[ 'Shop Factures' , 'shopping-cart' , 'primary' ] ,
+		'Commerce/Managers/my-shops/view-coupons/shid:' . $shop['code'] =>
+			[ 'Shop Coupons' , 'gift' , 'success' ] ,
+		'Commerce/Managers/my-shops/my-debtors/shid:' . $shop['code'] =>
+			[ 'Shop Debtors' , 'shopping-cart' , 'primary' ] ,
+		'Commerce/Managers/my-shops/delete/shid:' . $shop['code'] =>  
+			[ 'Delete Shop' , 'remove' , 'danger' ] ,
+		'Commerce/Managers/my-shops/json/shid:' 	. $shop['code'] =>
+			[ 'Generate Shop Single JSON' , 'check' , 'warning' ] ,
+		'Commerce/Managers/my-shops/list-products/shid:'. $shop['code'] =>
+			[ 'Generate Shop Products List' , 'check' , 'success' ] 
+		); 
+		if( $isTemplatingShop ){
+		    $keys = array_keys( $A );
+		    unset( $keys[0] , $keys[1] , $keys[4] , $keys[5] , $keys[9] );
+		    foreach( $keys as $isTemplatingShop )
+		        unset( $A[$isTemplatingShop] );
+		} foreach ($A as $Link => $Sub) : ?>
+		<div class="col-xs-12 col-sm-6 padding10 <?php $Html->EchoDir(); ?>">
+			<a href="<?php $Html->EchoLink( $Link ); ?>" target="_blank" data-relocate="true">
+			<button class="btn btn-block btn-<?php print $Sub[2] ;?>">
+
+				<span class='glyphicon glyphicon-<?php print $Sub[1] ; ?>'></span>
+				&#160; 
+				<?php $Html->pTranslate( $Sub[0] ); ?>
+
+			</button></a>
+		</div>
+		<?php endforeach ; ?>
+	</div>
+
+	<div class="col-xs-12 padding3"></div>
+
+</div>

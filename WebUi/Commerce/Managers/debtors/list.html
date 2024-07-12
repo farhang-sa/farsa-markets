@@ -1,0 +1,232 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->User()->isManager() ) return $Html->NotManagerAlert(); 
+$shop   = isset( $shop ) ? $shop : $App->input->shid ;
+if( is_array( $shop ) && isset( $shop[ "code" ] ) )
+	$shop = $shop[ "code" ];
+$cList  = $App->Call( "Commerce" , "Managers" , "Debtors" , 'list' );
+$cCount = ( int ) $App->input->cCount ;
+$cCount = $cCount > 1 ? $cCount : 50 ;
+$cPage 	= ( int ) $App->input->cPage ;
+$cPage 	= $cPage > 1 ? $cPage : 1 ;
+$date    = $App->input->date_condition ;
+$dateCon = $App->input->date_condition_value ;
+$amonCon = $App->input->amount_condition ;
+$amount  = $App->input->amount_condition_value ;
+$bLink = "Commerce/Managers/my-shops/my-debtors" ;
+$eLink = $bLink . "/edit/shid:" . $shop ;
+$dLink = $bLink . "/delete/shid:" . $shop ;
+$lcsl = "/list/cCount:{$cCount}" ; ?>
+<div class="col-xs-12 padding10">
+	<form method="post" class="col-xs-12 padding5 <?php $Html->EchoDir(); ?>">
+		<div class="col-xs-12 padding0">
+			<div class="col-xs-6 padding2 <?php $Html->EchoDir(); ?>">
+				<?php $Html->pTranslate( 'Count' ); ?>
+			</div>
+			<div class="col-xs-6 padding2">
+				<select name="cCount" class="input input-lg form-control text-center">
+					<option value="30" <?php 
+						print $cCount==30?"selected='true'":'';?>>30</option>
+					<option value="50" <?php 
+						print $cCount==50?"selected='true'":'';?>>50</option>
+					<option value="100" <?php 
+						print $cCount==100?"selected='true'":'';?>>100</option>
+					<option value="200" <?php 
+						print $cCount==200?"selected='true'":'';?>>200</option>
+					<option value="300" <?php 
+						print $cCount==300?"selected='true'":'';?>>300</option>
+					<option value="400" <?php 
+						print $cCount==400?"selected='true'":'';?>>400</option>
+					<option value="500" <?php 
+						print $cCount==500?"selected='true'":'';?>>50</option>
+					<option value="1000" <?php 
+						print $cCount==1000?"selected='true'":'';?>>1000</option>
+					<option value="2000" <?php 
+						print $cCount==2000?"selected='true'":'';?>>2000</option>
+				</select>
+			</div>
+		</div>
+		<div class="col-xs-12 padding0">
+			<div class="col-xs-6 padding2 <?php $Html->EchoDir(); ?>">
+				<select name='amount_condition' 
+					class="form-control input-lg text-center">
+					<option value='non' <?php 
+						print $amonCon == 'non' ? 'selected' : '' ;?>>
+						<?php $Html->pTranslate( 'Amount Condition' ); ?>
+					</option>
+					<option <?php print $amonCon==='more_than' ? 'selected' : '' ;?>
+						 value='more_than'>
+						<?php $Html->pTranslate( 'More Than' ); ?>
+					</option>
+					<option <?php print $amonCon==='less_than' ? 'selected' : '' ;?>
+						 value='less_than'>
+						<?php $Html->pTranslate( 'Less Than' ); ?>
+					</option>
+					<option <?php print $amonCon==='equal' ? 'selected' : '' ;?>
+						 value='equal'>
+						<?php $Html->pTranslate( 'Equal To' ); ?>
+					</option>
+				</select>
+			</div>
+			<div class="col-xs-6 padding2">
+				<input name='amount_condition_value' 
+					value='<?php print $amount ? $amount :"0"; ?>'
+					placeholder="<?php $Html->pTranslate( 'Amount' ); ?>"
+					class="form-control input input-lg text-center" type='text' />
+			</div>
+		</div>
+		<div class="col-xs-12 padding0">
+			<div class="col-xs-6 padding2 <?php $Html->EchoDir(); ?>">
+				<select name='date_condition' 
+					class="form-control input-lg text-center">
+					<option value='non' <?php print $dateCon=='non' ? 'selected' : '' ;?>>
+						<?php $Html->pTranslate( 'Date Condition' ); ?>
+					</option>
+					<option <?php print $dateCon==='after_date' ? 'selected' : '' ;?>
+						 value='after_date'>
+						<?php $Html->pTranslate( 'After Date' ); ?>
+					</option>
+					<option <?php print $dateCon==='before_date' ? 'selected' : '' ;?>
+						 value='before_date'>
+						<?php $Html->pTranslate( 'Before Date' ); ?>
+					</option>
+				</select>
+			</div>
+			<div class="col-xs-6 padding2">
+				<input name='date_condition_value' 
+					value='<?php print $date ? $date : "-" ; ?>'
+					placeholder="<?php $Html->pTranslate( 'Amount' ); ?>"
+					class="form-control input input-lg text-center" type='date' />
+			</div>
+		</div>
+		<?php /* <div class="col-xs-12 padding0">
+			<div class="col-xs-6 padding2">
+				<?php $Html->pTranslate( 'Ordering' ); ?>
+			</div>
+			<div class="col-xs-6 padding2 <?php $Html->EchoDir(); ?>">
+				<select name='date_condition' 
+					class="form-control input-lg text-center">
+					<option value='non' <?php print $dateCon=='non' ? 'selected' : '' ;?>>
+						<?php $Html->pTranslate( 'Date Condition' ); ?>
+					</option>
+					<option <?php print $dateCon==='after_date' ? 'selected' : '' ;?>
+						 value='after_date'>
+						<?php $Html->pTranslate( 'After Date' ); ?>
+					</option>
+					<option <?php print $dateCon==='before_date' ? 'selected' : '' ;?>
+						 value='before_date'>
+						<?php $Html->pTranslate( 'Before Date' ); ?>
+					</option>
+				</select>
+			</div>
+		</div> */ ?>
+		<div class="col-xs-12 padding5"> </div>
+		<div class="col-xs-12 padding2">
+			<input type="hidden" name="cPage" value="1" />
+			<div class="col-sm-1 hidden-xs"> </div>
+			<a class="col-xs-12 col-sm-3 btn btn-lg btn-warning"
+				href="<?php $Html->EchoLink( 
+					'Commerce/Managers/my-shops/my-debtors/total/shid:' . $shop ); ?>">
+				<?php $Html->pTranslate( 'Total Demands' ); ?>
+			</a>
+			<div class="col-sm-1 hidden-xs"> </div>
+			<button class="col-xs-12 col-sm-3 btn btn-success btn-lg">
+				<?php $Html->pTranslate( 'List' ); ?>
+			</button>
+			<div class="col-xs-12 col-sm-1 hidden-xs"> </div>
+			<a class="col-xs-12 col-sm-3 btn btn-lg btn-primary"
+				href="<?php $Html->EchoLink( 
+					'Commerce/Managers/my-shops/my-debtors/new/shid:' . $shop  ); ?>">
+				<span class="glyphicon glyphicon-plus"></span>
+			</a>
+		</div>
+	</form>
+	<div class="col-xs-12 padding5">
+		<?php if ( $cList && is_array( $cList ) && isset( $cList[0] ) ) : ?>
+		<div class="col-xs-12 col-sm-6 col-sm-push-3 padding5">
+			<?php if( $cCount <= count( $cList ) ) : ?>
+			<a href="<?php $Html->EchoLink( "{$lcsl}/cPage:" . ( $cPage + 1 ) ) ; ?>"
+				 class="pull-right">
+			<button class="btn btn-success">Next Page</button></a>
+			<?php endif; if ( $cPage > 1 ) : ?>
+			&#160; &#160; &#160; 
+			<a href="<?php $Html->EchoLink( "{$lcsl}/cPage/" . ( $cPage - 1 ) ) ; ?>"
+				class="pull-left">
+			<button class="btn btn-success">Provius Page</button></a>
+			<?php endif ; ?>
+		</div>
+		<?php endif ;
+		if( empty( $cList ) ) : ?>
+		<div class="col-xs-12 padding5">
+
+			<div class="alert alert-success">
+
+				<?php $Html->pTranslate( 'No Debt/Debtor Found' ); ?>
+
+			</div>
+
+		</div>
+		<?php else : ?>
+		<table class="col-xs-12 padding5 <?php $Html->EchoDir(); ?> text-center">
+			<tr>
+				<th class="col-xs-1 padding0" style="text-align:center;">
+					<?php $Html->pTranslate( 'Row' ); ?>
+				</th>
+				<th class="col-xs-4 padding8" style="text-align:center;">
+					<?php $Html->pTranslate( 'User' ); ?>
+				</th>
+				<th class="col-xs-3 padding8" style="text-align:center;">
+					<?php $Html->pTranslate( 'Amount' ); ?>
+				</th>
+				<th class="col-xs-2 padding8" style="text-align:center;">
+					<?php $Html->pTranslate( 'Edit' ); ?>
+				</th>
+				<th class="col-xs-2 padding8" style="text-align:center;">
+					<?php $Html->pTranslate( 'Actions' ); ?>
+				</th>
+			</tr>
+			<?php $i = 0 ;foreach ( $cList as $cRow ) : $i++ ; ?>
+			<tr>
+				<th class="col-xs-1 padding0" style="text-align:center;">
+					<?php print $i; ?>
+				</th>
+				<th class="col-xs-4 padding8" style="text-align:center;">
+					<?php $Html->Call( 'User' , 'Profile' , 
+						'id' , [ "UserId" => $cRow[ 'user' ] ]); ?>
+				</th>
+				<th class="col-xs-3 padding8" style="text-align:center;">
+					<?php print Ted\HumanPrice( $cRow[ 'amount' ] ). ' ' ;
+					$Html->pTranslate( '$' ); ?>
+				</th>
+				<th class="col-xs-2 padding8" style="text-align:center;">
+					<?php print date( 'Y-m-d' , $cRow[ 'edit' ] ); ?>
+				</th>
+				<th class="col-xs-2 padding8" style="text-align:center;">
+					<a href="<?php $Html->EchoLink( 
+						$eLink . "/uid:" . $cRow[ 'user' ] ); ?>" target="_blank">
+						<span class="glyphicon glyphicon-edit"></span>
+					</a>
+					 &#160; 
+					<a href="<?php $Html->EchoLink( 
+						$dLink . "/uid:" . $cRow[ 'user' ] ); ?>" target="_blank">
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+				</th>
+			</tr>
+			<?php endforeach ; ?>
+		</table>
+		<?php endif ; if ( $cList && is_array( $cList ) && isset( $cList[0] ) ) : ?>
+		<div class="col-xs-12 col-sm-6 col-sm-push-3 padding5">
+			<?php if( $cCount <= count( $cList ) ) : ?>
+			<a href="<?php $Html->EchoLink( "{$lcsl}/cPage:" . ( $cPage + 1 ) ) ; ?>"
+				 class="pull-right">
+			<button class="btn btn-success">Next Page</button></a>
+			<?php endif; if ( $cPage > 1 ) : ?>
+			&#160; &#160; &#160; 
+			<a href="<?php $Html->EchoLink( "{$lcsl}/cPage/" . ( $cPage - 1 ) ) ; ?>"
+				class="pull-left">
+			<button class="btn btn-success">Provius Page</button></a>
+			<?php endif ; ?>
+		</div>
+		<?php endif ; ?>
+	</div>
+</div>

@@ -1,0 +1,254 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+$facture = isset( $facture ) ? $facture : $App->input->search( "fid" , "facture" );
+if( is_string( $facture ) )
+	$facture = $App->COMMERCE()->PullFacture( $facture );
+if( ! is_array( $facture ) ) 
+    return $Html->NotFoundedAlert();
+$shop = array_keys( $facture["discussions"] )[0] ;
+$shop = $App->COMMERCE()->PullShop( $shop );
+$isMarketMainShopFacture = $App->isMarketMain( $shop );
+$target = $facture[ "target" ]; 
+$PCode  = $facture[ "code" ];
+$PStat  = $facture[ "category" ];
+$RECEIVE = $facture['receive']; ?>
+<div class="col-xs-12 facture-view <?php print $facture["code"]; ?>">
+	<div class="col-xs-12 padding5 facture-data">
+		<div class="col-xs-12 padding2 text-center" style="font-weight:bold;">
+			<?php $Html->pTranslate( "Facture Tracking Code" ); ?> : 
+			<?php print $App->ParsNums( $facture[ "reference" ] ); ?>
+		</div>
+		<div class="col-xs-12 text-center" style="font-weight:bold;">
+		    <?php if( isset( $facture["address"] ) ) 
+		        $Html->Call( "Social" , "User" , "Addresses" , 
+				    "View" , [ "Address" => $facture["address"] ] ); ?>
+			<div class="col-xs-12 padding2">
+			    <div class="col-xs-4 padding2 <?php $Html->EchoDir(); ?>"
+			        style="padding-top:25px;">
+			        <?php $Html->pTranslate( "User" ); ?>
+			    </div>
+			    <div class="col-xs-8 padding2">
+				    <?php $Html->Call( 'User' , 'Profile' , 'Id' , 
+					    [ "UserId" => $facture["writer"] ] ); ?>
+			    </div>
+			</div>
+			<div class="col-xs-12 padding2">
+			    <div class="col-xs-4 padding2 <?php $Html->EchoDir(); ?>">
+			        <?php $Html->pTranslate( 'Delivery' ); ?>
+			    </div>
+			    <div class="col-xs-8 padding2">
+				    <?php if( $RECEIVE == "RECEIVE_SHOP" )
+					    $Html->pTranslate( 'In Shop' );
+				    else $Html->pTranslate( 'Reserved Location' ); ?>
+			    </div>
+			</div>
+			<div class="col-xs-12 padding2">
+			    <div class="col-xs-4 padding2 <?php $Html->EchoDir(); ?>">
+			        <?php $Html->pTranslate( 'Phone Number' ); ?>
+			    </div>
+			    <div class="col-xs-8 padding2">
+				    <?php $ac = $facture["writer"] ;
+				    $ac = $App->User()->LoadAccountByCode( $ac , [ "phone" ] );
+				    print $App->ParsNums( '0' . explode( "-" , $ac["phone"] )[1] ) ; ?>
+			    </div>
+			</div>
+		</div>
+		<div class="col-xs-12 padding2"></div>
+		<table class="col-xs-12 table" border=1
+			style="margin:2.5px;">
+			<thead style="font-weight:bolder;text-align:center;">
+				<tr>
+					<th class="text-center">
+						<?php $Html->pTranslate( "Row" ); ?>
+					</th>
+					<th class="text-center">
+						<?php $Html->pTranslate( "Item Name" ); ?>
+					</th>
+					<th class="text-center">
+						<?php $Html->pTranslate( "Count" ); ?>
+					</th>
+					<th class="text-center">
+						<?php $Html->pTranslate( "Unit" ); ?>
+					</th>
+					<th class="text-center">
+						<?php $Html->pTranslate( "Price" ); ?>
+					</th>
+					<!--<th class="text-center">
+						<?php // $Html->pTranslate( "Off Amount Of Each" ); ?>
+					</th>
+					<th class="text-center">
+						<?php $Html->pTranslate( "final" ); ?>
+					</th> -->
+					<th class="text-center">
+						<?php $Html->pTranslate( "Each SubUint" ); ?>
+					</th>
+					<th class="text-center">
+						<?php $Html->pTranslate( "Sum" ); ?>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php $ic = 1; $ac = 0 ; $io = 0 ; $co = 0 ; 
+				$re = 0 ; $tp = 0 ; $lm_init = false ;
+				foreach ($facture["facture"] as $key => $value) : 
+					$item = $App->COMMERCE()->PullElement( $key );
+				if( ! $item && ! $lm_init ) : // LastMinuteItems
+				$lm_init = true ; ?>
+				<tr class="" style="font-weight:bolder;border:2px solid black;">
+					<td  class="text-center">
+						<!-- No Row -->
+					</td>
+					<td>
+						<?php $Html->pTranslate( 'Total' ); ?>
+					</td>
+					<td class="text-center">
+						<!-- Empty Space -->
+					</td>
+					<td>
+						<!-- Empty Space -->
+					</td>
+					<td class="text-right">
+						<?php // print number_format( $ac , 0 , "." , "," ); ?>
+					</td>
+					<!--<td style="font-weight:bolder">
+						<?php // print $App->ParsNumsFormat( $io + $co ); ?>
+					</td>
+					<td class="text-right">
+						Final !
+					</td> -->
+					<td class="text-right">
+						<!-- Empty Space -->
+					</td>
+					<td style="font-weight:bolder">
+						<?php print $App->ParsNumsFormat( $tp ); ?>
+					</td>
+				</tr>
+				<?php endif ; ?>
+				<tr class="">
+					<td  class="text-center">
+						<?php print $App->ParsNums( $ic ) ; ?>
+					</td>
+					<td>
+						<?php print $value[ "title" ]; 
+						if( $item && ! $isMarketMainShopFacture ) :?>
+						( <?php print $App->ParsNums( $item["iCount"] ) . " " . $item['iSubunit'] ; ?> )
+						<?php endif; ?>
+					</td>
+					<td class="text-center">
+						<?php $key = $value[ "count" ];
+						print $App->ParsNumsFormat( ( int ) $key );
+						if( isset( $item[ 'isToBeWeight' ] ) ) :
+							$key = (float) ( $key * $item[ 'iWeight' ] );
+							print '<br/>(';
+							print $App->ParsNumsFormat( $key );
+							print ')' ;
+						endif; ?>
+					</td>
+					<td>
+						<?php if( $isMarketMainShopFacture )
+						    $Html->pTranslate( $item["iSubunit"] );
+					    else $Html->pTranslate( $item["unit"] );
+						if( isset( $item[ 'isToBeWeight' ] ) ) :
+							print "<br/>(" ; 
+							$Html->pTranslate( 'kilo' );
+							print ")" ;
+						endif; ?>
+					</td>
+					<td class="text-right">
+						<?php /*$key = $value[ "actual" ];  // Real Price
+							print $App->ParsNumsFormat( $key );
+							$ac += $key;*/
+							$key = $value[ "pay" ]; // Final Price
+							print $App->ParsNumsFormat( $key );
+							$re += $key; ?>
+					</td>
+					<!--
+					<td class="text-right">
+						<?php // Internal Off
+						if( ! $lm_init ) :
+							$key = ( $value[ "actual" ] - $value[ "real" ] );
+							$pri = $key ;
+							$key = $key * $value[ "count" ];
+							$io += $key;
+							// Coupon Off
+							$key = isset( $value['coupon'] ) ? $value['coupon'] : 0 ; 
+							if( $key >= 1 ){
+								$pri += $key ;
+								$co  += $key ;
+							} $pri = $App->ParsNumsFormat( $pri ) ;
+							print $App->ParsNums($pri . " (" .$value["count"]. ")") ; 
+						endif; ?>
+					</td>
+					<td class="text-right">
+						<?php $key = $value[ "pay" ];
+							print $App->ParsNumsFormat( $key );
+							$re += $key; ?>
+					</td>-->
+					<td class="text-right">
+						<?php $key = $value[ "pay" ];
+							$cou = isset( $item["iCount"] ) && ! $isMarketMainShopFacture ? $item["iCount"] : 1 ;
+							print $App->ParsNumsFormat( $key / $cou ); ?>
+					</td>
+					<td class="text-right">
+						<?php $key = $value[ "count" ] * $value[ "pay" ];
+							print $App->ParsNumsFormat( $key ); 
+							$tp += $key; ?>
+					</td>
+				</tr>
+				<?php $ic++ ; endforeach; ?>
+				<tr style="font-weight:bolder;border:2px solid black;">
+					<td>
+						<!-- Empty Space -->
+					</td>
+					<td>
+						<?php $Html->pTranslate( "Total Sum" ); ?>
+					</td>
+					<td>
+						<!-- Empty Space -->
+					</td>
+					<td>
+						<!-- Empty Space -->
+					</td>
+					<td class="text-right">
+						<?php // print number_format( $ac , 0 , "." , "," ); ?>
+					</td>
+					<!-- <td>
+						<?php // print $App->ParsNumsFormat( $io + $co ); ?>
+					</td>
+					<td class="text-right">
+						Final
+					</td> -->
+					<td class="text-right">
+						<!-- Empty Space -->
+					</td>
+					<td>
+						<?php print $App->ParsNumsFormat( $tp ); ?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="col-xs-12 padding5 text-center">
+			<div class="col-xs-12 padding5" style="font-weight:bold;">
+				<?php print $shop[ 'title' ]; ?> : 
+				<?php print $shop[ 'address' ]; ?> 
+			</div>
+			<div class="col-xs-12 padding5" style="font-weight:bold;">
+				<?php $StrNums = "" ;
+				if( isset( $shop[ 'manager_number' ] ) ) :
+					$StrNums .= $Html->Translate( 'Manager Number' ); 
+					$StrNums .= " : " . $shop[ 'manager_number' ] ;
+				endif ; if( isset( $shop[ 'accounting_number' ] ) ) :
+					if( strlen( $StrNums ) >= 1 )
+						$StrNums .= " | " ;
+					$StrNums .= $Html->Translate( 'Accounting Number' ); 
+					$StrNums .= " : " . $shop[ 'accounting_number' ] ;
+				endif ; if( isset( $shop[ 'customer_services_number' ] ) ) :
+					if( strlen( $StrNums ) >= 1 )
+						$StrNums .= " | " ;
+					$StrNums .= $Html->Translate( 'Customer Services Number' ); 
+					$StrNums .= " : " . $shop[ 'customer_services_number' ] ;
+				endif ; 
+				print $App->ParsNums( $StrNums ) ; ?>
+			</div>
+		</div>
+	</div>
+</div>

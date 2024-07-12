@@ -1,0 +1,33 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->COMMERCE()->isManager() ) return $Html->NotManagerAlert();
+$Shops = $App->SilentCall( "commerce" , "Managers" , "Shops" , "My" ) ;
+if ( ! $Shops ) : ?>
+<div class="col-xs-12 padding0">
+    
+	<?php $Html->NotFoundedAlert( 'No Shop Found' , 'danger') ; ?>
+	
+</div>
+<?php return false ; endif ; ?>
+<div class="col-xs-12 shops-list <?php $Html->EchoDir();?>">
+
+	<?php $counter = 0 ;
+	if ( isset( $Shops["code"] ) ) 
+	    $Shops = array( $Shops );
+	foreach( $Shops as $Shop ) : 
+	$subs = isset( $Shop[ 'subjects' ] ) ? $Shop[ 'subjects' ] : array();
+	if( isset( $subs['products_template'] ) ):  ?>
+	<div class="col-xs-12 shop-holder padding0">
+		<?php $Html->Call( "Commerce" , "Managers" , "Shops" , "View" ,
+			[ 'shop' => $Shop[ 'code' ] ] );?>
+	</div>
+	<div class="col-xs-12 padding10">&#160;</div>
+	<?php $counter++ ; endif; endforeach ;
+	if( $counter == 0 ) : ?>
+	<div class="col-xs-12 padding0">
+	    
+	    <?php $Html->NotFoundedAlert( 'No Templating Shop Found' , 'danger') ; ?>
+	    
+    </div>
+    <?php endif; ?>
+
+</div>

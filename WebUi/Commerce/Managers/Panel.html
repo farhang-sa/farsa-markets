@@ -1,0 +1,249 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->COMMERCE()->isManager() ) return $Html->NotManagerAlert(); ?>
+<div class="col-xs-12 padding0" style="height:100%;overflow:hidden;overflow-y:auto;">
+
+	<div class="col-xs-12 col-sm-3 padding0 <?php $Html->EchoDir() ; ?>">
+
+		<div class="col-xs-12 padding5"></div>
+		<div class="col-xs-12 padding5"></div>
+		<div class="col-xs-12 padding5"></div>
+
+		<div class="col-xs-12 padding0 alert ">
+			<?php print $App->Translate( "Manager's Tools" ); ?>
+		</div>
+
+		<ul class="col-xs-12 padding0 nav nav-stacked 
+			nav-pills <?php $Html->EchoAlign() ; ?>">
+
+			<?php $Links = array() ;
+			$Links[ 'my-malls' ] 		= [ '' , 'tags' , 'My Malls List' ];
+			$Links[ 'my-malls/send' ] 	= [ 'my-malls' , 'plus' , 'Create A New Mall' ];
+			$Links[ 'my-shops' ] 		= [ '' , 'shopping-cart' , 'My Shops List' ];
+			$Links[ 'my-shops/send' ] 	= [ 'my-shops' , 'plus' , 'Create A New Shop' ];
+			if( $App->User()->isAdmin() )
+				$Links[ 'my-temps' ] 		= [ '' , 'inbox' , 'Product Templating' ];
+			$Links[ 'my-coupons' ] 		= [ '' , 'gift' , 'My Coupons' ];
+			$Links[ 'my-coupons/send' ] = [ 'my-coupons' ,'plus' ,'Create A New Coupon' ];
+			$Links[ 'my-affiliations' ] 		= [ '' , 'gift' , 'My Affiliations' ];
+			$Links[ 'my-affiliations/send' ] = [ 'my-affiliations' ,'plus' ,'Create A New Affiliation' ];
+			foreach ($Links as $key => $value) : 
+			$key = trim( str_replace( $value[0] , '' , $key ) , ' /' ) ;
+			$mLink = trim( $value[0] . '/' . $key , ' /' );
+			if( $key === 'my-malls' && $App->input->Managers === true )
+				$active = true ; 
+			else if( $value[0] === '' )
+				$active = $App->input->{$key} === true ? true : false ; 
+			else $active =  $App->input->{$value[0]} === $key ? true : false ;
+			if( ! $active && $value[0] === '' && $App->input->{$key} )
+				$active = true ;
+			$glyph = 'glyphicon glyphicon-' . $value[1] . ' ' ; ?>
+			<li <?php if ( $active  ) print 'class="active"'; ?>>
+				<a href="<?php $Html->EchoLink( 'Commerce/Managers/' . $mLink ); ?>">
+					<span class="col-xs-3 col-xs-offset-1 
+						<?php print $glyph ; $Html->EchoDir() ; ?>"></span>
+					<?php print $App->Translate( $value[ 2 ] ); ?>
+				</a>
+			</li>
+			<?php endforeach ;
+			// Malls Mangement s
+			if( $App->input->maid ) :
+			$mall = $App->COMMERCE()->PullMall( $App->input->maid );
+			if( $mall ) :
+			$cTitle = $mall[ 'title' ] ; ?>
+			<li class='alert alert-success text-center'>
+				<?php print $cTitle ; ?>
+			</li>
+			<?php $oLink = 'maid:' . $App->input->maid ;
+			$Links = array() ;
+			$Links[ 'view' ] 			= [ 'flag' 	 , 'View Mall' ];
+			$Links[ 'manage-shops' ] 	= [ 'inbox'  , 'Mall Shops' ];
+			$Links[ 'my-shops/send' ]	= [ 'plus'   , 'New Shop' ];
+			$Links[ 'settings' ]		= [ 'cog' 	 , 'Mall Settings' ];
+			$Links[ 'factures' ]		= [ 'shopping-cart' , 'Mall Factures' ];
+			foreach( $Links as $key => $value ) : 
+			$mLink = '' ;
+			$active = false ;
+			if( stristr( $key , 'my-shops' ) === false ) {
+				$mLink = trim( 'Commerce/Managers/my-malls/' . $key . '/' . $oLink , ' /' ) ;
+				$active = $App->input->{'my-malls'} === $key ? true : false ;
+			} else {
+				$key = str_replace('my-shops/', '', $key ) ;
+				$mLink = trim( 'Commerce/Managers/my-shops/' . $key . '/' . $oLink , ' /' ) ;
+				$active = $App->input->{'my-shops'} === $key ? true : false ;
+			} $glyph = 'glyphicon glyphicon-' . $value[0] . ' ' ; ?>
+			<li <?php if ( $active ) print 'class="active"'; ?>>
+				<a href="<?php $Html->EchoLink( $mLink); ?>">
+					<div class="col-xs-3 col-xs-offset-1 
+						<?php print $glyph ; $Html->EchoDir() ; ?>"></div>
+					<?php print $App->Translate( $value[1] ); ?>
+				</a>
+			</li>
+			<?php endforeach ; endif ;
+			// Shops Managements
+			elseif( $App->input->shid || $App->input->sid || $App->input->pid ) :
+			$cLink = null ;
+			$cTitle = null ;
+			$oLink = null ;
+			if( $App->input->shid ) :
+				$eid = $App->input->shid ;
+				$shid = $App->COMMERCE()->LoadShop( $eid );
+				if( $shid ) :
+					$cTitle = $shid[ 'title' ] ;
+					$cLink = $oLink = 'shid:' . $eid ;
+				endif ;
+			elseif( $App->input->sid ) :
+				$eid = $App->input->sid ;
+				$shid = $App->COMMERCE()->PullShopByElementId( $eid );
+				if( $shid ) :
+					$cTitle = $shid[ 'title' ] ;
+					$cLink = 'sid:' . $eid ;
+					$oLink = 'shid:' . $shid['code'] ;
+				endif ;
+			else :
+				$eid = $App->input->pid ;
+				$shid = $App->COMMERCE()->PullShopByElementId( $eid );
+				if( $shid ) :
+					$cTitle = $shid[ 'title' ] ;
+					$cLink = $oLink = 'shid:' . $shid['code'] ;
+				endif ;
+			endif ;
+			if( $cLink && $cTitle ) :  ?>
+			<li class='alert alert-success text-center'>
+				<?php print $cTitle ; ?>
+			</li>
+			<?php $Links = array() ;
+			$Links[ 'view' ] = 
+				[ 'my-shops' , $oLink , 'flag' , 'View Shop' ];
+			$Links[ 'edit' ] = 
+				[ 'my-shops' , $oLink , 'edit' , 'Edit Shop' ];
+			$Links[ 'my-sections' ] 	= [ '' , $oLink , 'inbox' , 'Manage Sections' ];
+			$Links[ 'my-sections/send' ] = 
+				[ 'my-sections' ,$cLink ,'plus' ,'Create A New Section' ];
+			$Links[ 'my-products' ] 	= [ '' , $cLink , 'inbox' , 'Manage Products' ];
+			$Links[ 'my-products/send' ] = 
+				[ 'my-products' ,$cLink ,'plus' ,'Send A New Product' ];
+			$Links[ 'factures' ] = 
+				[ 'my-shops' , $cLink, 'shopping-cart' , 'Shop Factures' ];
+			$Links[ 'view-coupons' ] = 
+				[ 'my-shops' , $cLink, 'gift' , 'Shop Coupons' ];
+			$Links[ 'my-agents' ] 		= [ 'my-shops' , $cLink, 'flag' , 'My Agents' ];
+			$mSection = $App->input->{'my-sections'} ; 
+			foreach ($Links as $key => $value) :
+			$key = trim( str_replace( $value[0] , '' , $key ) , ' /' ) ;
+			$mLink = trim( $value[0] . '/' . $key , ' /' ) . '/' . $value[1];
+			if( $value[0] === '' ) 
+				$active = ( $App->input->{$key} === true ) ? true : false ; 
+			else $active = ( $App->input->{$value[0]} === $key ) ? true : false ; 
+			$glyph = 'glyphicon glyphicon-' . $value[2] . ' ' ; ?>
+			<li <?php if ( $active ) print 'class="active"'; ?>>
+				<a href="<?php $Html->EchoLink( 'Commerce/Managers/' . $mLink); ?>">
+					<div class="col-xs-3 col-xs-offset-1 <?php print $glyph ; $Html->EchoDir() ; ?>"></div>
+					<?php print $App->Translate( $value[3] ); ?>
+				</a>
+			</li>
+			<?php endforeach ; endif ; endif ;
+			/*$temps = $App->input->{"my-temps"}; 
+			if( $temps ) :
+			$active = $temps === true || $temps == "list" ? true : false ;?>
+			<li class='alert alert-success text-center'>
+				<?php $Html->pTranslate( 'Product Templating' ); ?>
+			</li>
+			<li <?php if ( $active ) print 'class="active"'; ?>>
+				<a href="<?php $Html->EchoLink( 'Commerce/Managers/my-temps/list'); ?>">
+					<div class="col-xs-3 col-xs-offset-1 glyphicon glyphicon-list <?php $Html->EchoDir() ; ?>"></div>
+					<?php print $App->Translate( 'List Templating Shops' ); ?>
+				</a>
+			</li>
+			<?php
+			
+			endif; */?>
+
+		</ul>
+
+		<div class="col-xs-12 padding5"></div>
+		
+	</div>
+
+	<div class="col-xs-12 visible-xs padding5"></div>
+
+	<div class="col-xs-12 col-sm-8 padding0" 
+	style="height:100%;overflow:hidden;overflow-y:auto;">
+
+		<div class="col-xs-12 padding0 alert btn-success">
+
+			<div class="col-xs-12 padding10"></div>
+
+			<div class="col-xs-12">
+
+				<h2 class="heading">
+
+					<?php print $App->Translate( "Manager's Dashboard" ); ?>
+
+				</h2>
+
+			</div>
+
+			<div class="col-xs-12 padding10"></div>
+
+		</div>
+
+		<div class="col-xs-12 tutor-action-holder padding0">
+
+		<?php $Action = is_string( $App->input->panel ) ? 
+			$App->input->panel : "sections" ;
+		
+		$Action = strtolower( $Action ) ;
+
+		switch ( $Action ) :
+
+			case 'manage-temps' :
+			case 'my-temps':
+			case 'templating':
+
+				$Html->Call( "commerce" , "Managers" , "Temps" );
+
+			break;
+			case 'manage-affiliations' :
+			case 'my-affiliations':
+
+				$Html->Call( "commerce" , "Managers" , "Affiliations" );
+
+			break;
+			case 'manage-coupons' :
+			case 'my-coupons':
+
+				$Html->Call( "commerce" , "Managers" , "Coupons" );
+
+			break;
+			case 'manage-products' :
+			case 'my-products':
+
+				$Html->Call( "commerce" , "Managers" , "Products" );
+
+			break;
+			case 'manage-sections':
+			case 'my-sections':
+
+				$Html->Call( "commerce" , "Managers" , "Sections" );
+
+			break;
+			case "manage-shops" :
+			case "my-shops" :
+
+				$Html->Call( "commerce" , "Managers" , "Shops" );
+
+			break ;
+			case 'manage-malls' :
+			case 'my-malls':
+			default :
+
+				$Html->Call( "commerce" , "Managers" , "Malls" );
+
+			break ;
+		endswitch ; ?>
+		
+		</div>
+		
+	</div>
+
+</div>

@@ -1,0 +1,126 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->User( "login" ) ) return $Html->NotLogedinAlert(); 
+$App->SilentCall( "social" , "user" , "addresses" , "edit" );
+
+// Map Data
+$centerLog  = isset( $centerLog ) ? $centerLog : 0 ;
+$centerLat  = isset( $centerLat ) ? $centerLat : 0 ;
+$randomId = 'map_' . rand( 1000 , 9999 );
+$limit_radius = isset( $limit_radius ) ? $limit_radius : null ; 
+$limit_points = isset( $limit_points ) ? $limit_points : null ;
+
+$Definition = isset( $Definition ) ? $Definition : array() ;
+$Definition = is_array( $Definition ) ? $Definition : array();
+$Definition[ "code" ] = [ "hidden" , null , null ]; 
+$Definition[ "name" ] = [ "text" , null , "Receivers Name" ];
+$Definition[ "number" ] = [ "tel" , null , "Receivers Phone-Number" ];
+$Definition[ "postal" ] = [ "text" , null , "Postal Code"  , 'hidden' ];
+$Definition[ "address" ] = [ "textarea" , null , "Your Address" ]; 
+$Definition[ "buttonMapModal" ]  = '<button class="btn btn-lg btn-primary btn-block btn-show-map-point-selector">' . 
+    $Html->Translate( 'Point On Map' ) . "</button>" ;
+$Definition[ "latitude" ]  = [ "text" , null , "Address Latitude" , 'address-latitude text-center hidden' , null , 'disabled' ];
+$Definition[ "longitude" ] = [ "text" , null , "Address Longitude" , 'address-longitude text-center hidden' , null , 'disabled' ]; 
+$Address = $App->input->aid ;
+$Address = $App->User()->CustomData( 'User' , "Addresses" , $Address , null );
+if( ! $Address ) return $Html->NotFoundedAlert();
+$centerLog = isset( $Address['longitude'] ) ? $Address['longitude'] : $centerLog ;
+$centerLat = isset( $Address['latitude'] ) ? $Address['latitude'] : $centerLat ;?>
+<div class="col-xs-12 <?php $Html->EchoDir() ; ?> <?php $Html->EchoAlign() ;?> edit-address-holder"
+	style="margin:20px 0px;">
+
+	<h3 class="col-xs-12 alert alert-info text-center" style="margin:10px 0px;">
+		<?php $Html->pTranslate( 'Edit Address' ); ?>
+	</h3>
+	
+	<form class="col-xs-12 padding5" method='post' enctype="multipart/form-data"
+	    style='margin:5px;'>
+
+		<div class="col-xs-12 padding2"></div>
+
+		<?php $Html->ExecuteDefinition( "edit-address" , $Definition , $Address ); ?>
+
+		<input type="submit" class="btn btn-lg btn-success btn-save-address" 
+			value="<?php print $App->Translate( "Save Address" ); ?>">
+
+	</form>
+
+</div>
+<div class="modal fade" id="new_address_map_modal" tabindex="-2" 
+    style='position:fixed;overflow:hidden;z-index:99999999;'
+    role="dialog" aria-labelledby="NewAddressMapModal" aria-hidden="false">
+  <div class="modal-dialog" role="document" style='height:100%;'>
+    <div class="modal-content" style='height:100%;'>
+      <div class="modal-header" style='height:12.5%;'>
+        <h4 class="modal-title" id="NewAddressMapModal">
+            <?php $Html->pTranslate( 'Select Your Location' ); ?>
+        </h4>
+      </div>
+      <div class="modal-body" style='height:75%;'>
+        
+        <?php $Html->Call( 'design' , 'tools' , 'maps_osm_openlayer' , 
+            [ "mapId" => $randomId , 'zoom' => 15 , 'print_div' => 1 , 
+            'select' => true , 'centerLat' => $centerLat , 'centerLog' => $centerLog ,
+                "limit_radius" => $limit_radius , "limit_points" => $limit_points ] ); ?>
+        
+      </div>
+      <div class="modal-footer" style='height:12.5%;'>
+        <button type="button" class="btn btn-lg btn-primary save-location">
+            <?php $Html->pTranslate( 'Save Location' ); ?>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$( document ).ready(function(){
+    
+    var isInsideModal = <?php print isset( $insideModal ) ? '"' . $insideModal . '"' : 'false' ;  ?> ;
+    var isInsideModalFunc = <?php print isset( $insideModal ) ? $insideModal : 'false' ;  ?> ;
+    // Show Map Modal
+    $( '.btn.btn-show-map-point-selector' ).click(function(){
+        $( "#new_address_map_modal" ).modal('toggle');
+    });
+    
+    // Close Map Modal
+    $( '#new_address_map_modal .save-location' ).click(function(){
+        var thisMap = window.fallon_map_<?php print $randomId ; ?>;
+        if( ! thisMap.lastMarkerLayer ){
+            Toast( "<?php $Html->pTranslate( 'Please Select A Location' ); ?>" );
+            return ;
+        } // else :
+        $( '.address-latitude' ).val( thisMap.lastMarkerLat + "" );
+        $( '.address-longitude' ).val( thisMap.lastMarkerLon + "" );
+        $( '#new_address_map_modal' ).modal( 'toggle' );
+        if( isInsideModal )
+            setTimeout( function(){
+                $( 'body' ).addClass( 'modal-open' );    
+            }, 500 );
+        Toast( "<?php $Html->pTranslate( 'Map Location Saved' ); ?>" );
+    }); 
+
+    if( isInsideModal ) $( '.btn-save-address' ).click(function(){
+        var fd = new FormData();
+        var items = new Array();
+        items[ "name" ]         = '<?php $Html->pTranslate( 'Please Input Receiver Name' ); ?>';
+        items[ "number" ]       = '<?php $Html->pTranslate( 'Please Input Receiver Number' ); ?>';
+        items[ "address" ]      = '<?php $Html->pTranslate( 'Please Input Address' ); ?>';
+        items[ "latitude" ]     = '<?php $Html->pTranslate( 'Please Input Latitude' ); ?>';
+        items[ "longitude" ]    = '<?php $Html->pTranslate( 'Please Input Longitude' ); ?>';
+        for( var item in items ){
+            var xItem = $( '.edit-address-holder [name="edit-address[' + item + ']"]' );
+            if( xItem.val().length == 0 ){
+                Toast( items[item] );
+                return false ;
+            } else fd.append( "edit-address[" + item + "]"  , xItem.val() ) ;
+        } var link = '<?php $Html->EchoLink( "web/views/view_addresses/ui:html" ); ?>';
+        RouteWithForm( link , fd , $( ".edit-address-holder" ) , function( send ){
+            if( isInsideModal ){
+                $( '#' + isInsideModal ).modal( 'hide' );
+                setTimeout( function(){ isInsideModalFunc(); } , 500 );
+            } else LoadCustomView( link , ".edit-address-holder" );
+        } , true ) ;
+    });    
+    
+});
+</script>

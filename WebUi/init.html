@@ -1,0 +1,86 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+
+$name = 'Markets';
+$desc = 'FarsaMarkets System For Purchasing Mass Products';
+$auth = 'Farhang Saeedi';
+$version = 'v1.0';
+$release = '20240118';
+$origin  = '20231203';
+
+if( defined( 'Markets_Web_api' ) ){ 
+    
+    if( defined( 'shid' ) ) {
+    
+        // For Single Shop Apps ( Metroo Kala Here )
+    
+        $Manager  = $App->getAppManager( FallonAppName );
+        $settings = $Manager->getSettings();
+        
+        if( isset( $settings[ 'markets_clients_single_app_title' ] ) )
+            $html->title( $settings[ 'markets_clients_single_app_title' ] );
+        else $html->title( $Html->Translate( 'MetrooKala - Web' ) );
+        
+        if( isset( $settings[ 'markets_clients_single_app_icon' ] ) )
+            $html->ico( $settings[ 'markets_clients_single_app_icon' ] ) ;
+        else $html->ico( 'https://metrookala.ir/assets/favicon.ico' ) ;
+        
+        if( isset( $settings[ 'markets_clients_single_app_title' ] ) )
+            $html->keyword( 'متروکالا , مترو کالا , MetrooKala , Metroo Kala , ارزانسرا , خوار و بار , لبنیات' . ',' . $settings[ 'markets_clients_single_app_title' ] );
+        else $html->keyword( 'متروکالا , مترو کالا , MetrooKala , Metroo Kala , ارزانسرا , خوار و بار , لبنیات' );
+        
+        //$html->tag2Head('<META HTTP-EQUIV="Access-Control-Allow-Origin" CONTENT="https://golestantanoor.ir">');
+        
+    } else {
+
+        // For Web Clients Mode ( Metroo Kala Here )
+
+        $html->title( $Html->Translate( 'MetrooKala - Web' ) );
+        $html->ico( 'https://metrookala.ir/assets/favicon.ico' ) ;
+        $html->keyword( 'متروکالا , مترو کالا , MetrooKala , Metroo Kala , ارزانسرا , خوار و بار , لبنیات' );
+        
+    } 
+    
+    $html->generator( 'Metroo Kala Powered By Markets 2024' );
+    
+} else if( stristr( TWeb_Domain , 'metrookala.ir' ) !== false ) {
+
+    // For Web Managers Mode ( Metroo Kala Here )
+    
+    $html->title( $Html->Translate( 'Metroo Kala' ) );
+    $html->ico( 'https://metrookala.ir/assets/logo.ico' ) ;
+    $html->keyword( 'مترو مدیریت , مترو کالا مدیریت' );
+    $html->generator( 'Metroo Kala Powered By Markets 2024' );
+    
+} else {
+
+    // Original Markets Mode
+
+    $html->title( $App->SYSTEM()->Settings('site_name') );
+    $html->ico( $html->webMedia( "Files/img" , "img_logo_markets.ico" ) ) ;
+    $html->keyword( 'Farsa , Markets , Online Ordering' );
+    $html->generator( 'Markets System v1 Powered By Fallon v2.5 & Ted v1.6' );
+    
+} // Resume :
+$html->charset( 'utf-8' );
+$html->meta( 'viewport' , 'width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=yes' );
+
+
+$html->Css( 'bootstrap.min.css' );
+$html->Css( 'bootstrap-responsive.css' );
+$html->Css( 'screen.css' );
+$html->Css( 'fallon.css' );
+$html->Css( 'Markets.css' );
+///
+$html->tag2Head("<script> SiteHttp = '" . TWeb_Index . "' ; </script>");
+$html->js2head( 'respond.js' );
+$html->js2head( 'jquery.min.js' );
+$html->js2head( 'fallon.js' );
+$html->js2head( 'Markets.base.js' );
+///
+$html->js2body( 'bootstrap.min.js' );
+$html->js2body( 'modernizr.js' );
+$html->js2body( 'plugins.js' );
+$html->js2body( 'options.js' );
+$html->js2body( 'Markets.js' );
+
+?>

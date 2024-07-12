@@ -1,0 +1,8 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ; 
+$shop = $App->COMMERCE()->PullShop( $App->input->shid );
+if ( ! $shop ) return $Html->NotFoundedAlert();
+$subs = isset( $shop[ 'subjects' ] ) ? $shop[ 'subjects' ] : array();
+if( ! isset( $subs['products_template'] ) ) // Normal?
+	$Html->FallonCall( 'commerce' , 'managers' , 'products' , 'send' );
+else $Html->FallonCall( 'commerce' , 'managers' , 'products' , 'send' , 
+	[ 'Definition' => [ 'input_product_template' => [ 'hidden' , '1' , '1' ] ] ] ); ?>

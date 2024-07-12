@@ -1,0 +1,137 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ; 
+if ( ! $App->User()->isManager() ) 
+	return $Html->NotManagerAlert(); ?>
+<div class="col-xs-12 padding5">
+
+	<div class="col-xs-12 padding5">
+
+		<div class="col-xs-12 padding0">
+
+			<h3 class="col-xs-12 alert-info" style="padding:15px;margin-top:15px;">
+
+				<?php $Html->pTranslate( 'Add New Debtor' ); ?>
+
+			</h3>
+
+		</div>
+
+		<?php $shop = isset( $shop ) ? $shop : $App->input->shid ;
+		if( is_array( $shop ) && isset( $shop[ 'code' ] ) )
+			$shop = $shop[ 'code' ];	
+		$bLink = "Commerce/Managers/my-shops/my-debtors" ;
+		$lLink = $bLink . "/list/shid:" . $shop ;
+		$eLink = $bLink . "/edit/shid:" . $shop ;
+		$search = $App->input->search_keywords ; ?>
+
+		<form method="POST" class="col-xs-12 padding5">
+
+			<input name="search_keywords" value="<?php print $search ? $search : '';?>"
+				class="input input-lg form-control text-center"
+				placeholder="<?php $Html->pTranslate( 'Search Users' ); ?>" />
+
+		</form>
+
+		<?php $new = $App->SilentCall( 
+			'Commerce' , 'Managers' , 'Debtors' , 'new' );
+		if( $new === true ) 
+			$Html->Alert( 'Debt Added Successfully' , 'success' );
+		
+		if( ! $shop ) :
+			$Html->Alert( 'Please Select A Shop First' , 'info' );
+		else : 
+		$user = $App->SilentCall( "User" , 
+			"Search" , [ 'UserId' => $search ] ); 
+		if( isset( $user['User'] ) )
+			unset( $user[ "User" ] ) ;
+		if( $search && ! $user ) :
+			$Html->Alert( 'No User for keyword : ' . $search , 'warning' );
+			/*print "<a style='margin-top:10px;' href='";
+			$Html->EchoLink($bLink . "/send/shid:" . $shop );
+			print "' class='btn btn-lg btn-success'>";
+			print " &#160; &#160; Reset &#160; &#160; ";
+			print "</a>" ;*/
+		elseif( $user  ) : 
+		$wh = "" ;
+		$profile = array();
+		$debts = array();
+		if( ! isset( $user[ "code" ] ) ){
+			foreach ($user as $us )
+				$wh .= "'" . $us['code'] . "' ," ;
+			$wh = trim( $wh , " ," );
+			$profile = $App->User()->LoadData( "users_profiles" , 
+				[ "*" ] , [ "`writer` IN ( " . $wh . " )" ] );
+			if( $profile && ! isset( $profile[ 'code' ] ) )
+				foreach ($profile as $key => $value) {
+					unset( $profile[$key] );
+					$profile[ $value[ 'writer' ] ] = $value ;
+				}
+			elseif( $profile )
+				$profile = array( $profile['code'] => $profile );
+			$debts = $App->SilentCall( 'Commerce' , 'Managers' , 'Debtors' ,
+				'list' , [ 'user' => $user ] );
+		} else {
+			$profile = $App->SilentCall( "User" , 
+					"Profile" , [ "UserCode" => $user[ "writer" ] ] );
+			if( $profile )
+				$profile = array( $profile['writer'] => $profile );
+			$debts = $App->SilentCall( 'Commerce' , 'Managers' , 'Debtors' ,
+				'list' , [ 'user' => $user ] );
+		} ?>
+		<div class="col-xs-12 padding5" style="margin-top:20px;">
+
+			<?php if( isset( $user['code'] ) ) 
+				$user = [ $user['code'] => $user ] ;
+			foreach ($user as $us) :
+				$wh = $us[ 'writer' ];
+				print "<div class='col-xs-12 padding5'>";
+				$wh = isset( $profile[ $wh ] ) ? $profile[ $wh ] : null ;
+				if( ! $wh )
+					$wh = array_merge( $us , [ 'name' => $us[ 'writer' ] ] ) ;
+				$Html->Call( "user" , "profile" , "id" , [ "Profile" => $wh ] );
+				if( isset( $debts[ $us[ 'writer' ] ] ) ) :
+					// Edit Debts
+					print "<div class='col-xs-12 padding5'>" ;
+					$Html->pTranslate( 'Previous Debt' );
+					print " : <br>" ;
+					print Ted\HumanPrice( $debts[ $us[ 'writer' ] ]['amount'] ) . " " ;
+					$Html->pTranslate( '$' );
+					print " &#160; <a href='" ;
+					$Html->EchoLink( $eLink . "/uid:" . $us['writer'] );
+					print "' target='_blank'>" ;
+					print "<span class='glyphicon glyphicon-edit'></span>";
+					print "</a></div>" ;
+				else : 
+					print "<form method='POST'>";
+					print "<div class='col-xs-12 padding5'>" ;
+						$Html->WriteInput( 'shid' , 'hidden' , $shop );
+						$Html->WriteInput( 'uid' , 'hidden' , $wh['writer'] );
+						print "<input type='number' placeholder='Debt Amount' ";
+						print "class='text-center form-control' name='amount'/>" ;
+					print "</div>" ;
+					print "</form>";
+				endif ;
+				print "</div>";
+			endforeach; 
+			/*print "<a style='margin-top:10px;' href='";
+			$Html->EchoLink($bLink . "/send/shid:" . $shop );
+			print "' class='btn btn-lg btn-success'>";
+			print " &#160; &#160; Reset &#160; &#160; ";
+			print "</a>" ;*/ ?>
+
+		</div>
+		<?php endif ; endif ; ?>
+
+	</div>
+
+	<div class="col-xs-12 padding5" style="margin-top:15px;">
+
+		<a href="<?php $Html->EchoLink( $lLink ); ?>" 
+			class="btn btn-lg btn-primary">
+
+			 &#160; <?php $Html->pTranslate( 'Go Back' ); ?> &#160; 
+
+		</a>
+
+	</div>
+
+</div>

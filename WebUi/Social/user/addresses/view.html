@@ -1,0 +1,58 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+$Address = isset( $Address ) ? $Address : $App->input->aid ;
+if( ! is_array( $Address ) )
+	$Address = $App->User()->CustomData( 'User' , "Addresses" , $Address , null );
+if( ! is_array( $Address ) ) return $Html->NotFoundedAlert(); ?>
+<div class="col-xs-12 address-view item-view <?php print $Address["code"]; ?>">
+	<?php if ( $App->User()->isOwner( $Address ) ) : ?>
+	<div class="col-xs-12 padding0">
+		<span class="col-xs-6 address-edit padding0">
+			<a href="<?php $Html->EchoLink( 
+				'Social/user/addresses/delete/aid:' . $Address[ "code" ] ); ?>">
+			<span class="glyphicon glyphicon-trash"></span></a>
+			 &#160; &#160;&#160; &#160; 
+			<a href="<?php $Html->EchoLink(	
+				'Social/user/addresses/edit/aid:' . $Address[ "code" ] ); ?>">
+			<span class="glyphicon glyphicon-edit"></span></a>
+		</span>
+		<span class="col-xs-6 padding0 text-center">
+			<?php $Html->pTranslate( 'Edit' ) ; ?> : 
+		</span>
+	</div>
+	<?php endif ; ?>
+	<div class="col-xs-12 padding0 address-data">
+		<div class="col-xs-12 padding0">
+			<span class="col-xs-3 padding5 <?php $Html->EchoDir(); ?>">
+				<?php $Html->pTranslate( "Number" ); ?>
+			</span>
+			<span class="col-xs-9 padding5">
+				<?php print $Address["name"] . " - " . $Address["number"] ; ?>
+			</span>
+		</div>
+		<div class="col-xs-12 padding0">&#160;</div>
+		<?php if( isset( $Address["postal"] ) ) : ?>
+		<div class="col-xs-12 padding0">
+			<span class="col-xs-3 padding5 <?php $Html->EchoDir(); ?>">
+				<?php $Html->pTranslate( "Postal Code" ); ?>
+			</span>
+			<span class="col-xs-9 padding5">
+				<?php print $Address["postal"] ; ?>
+			</span>
+		</div>
+		<div class="col-xs-12 padding0">&#160;</div>
+		<?php endif; ?>
+		<div class="col-xs-12 padding0">
+			<span class="col-xs-3 padding5 <?php $Html->EchoDir(); ?>">
+				<?php $Html->pTranslate( "Address" ); ?>
+			</span>
+			<span class="col-xs-9 padding5">
+				<?php if( isset( $Address[ "latitude"] , $Address[ "longitude"] ) )
+					print "<a href='https://www.google.com/maps/@" .
+						$Address['latitude'] . ',' . $Address['longitude'] . 
+						",18z?entry=ttu'>" . $Address['address'] . '</a>';
+				else print $Address['address'] ; ?>
+			</span>
+		</div>
+		<div class="col-xs-12 padding0">&#160;</div>
+	</div>
+</div>

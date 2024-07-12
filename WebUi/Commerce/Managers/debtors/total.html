@@ -1,0 +1,37 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+if ( ! $App->User()->isManager() ) 
+	return $Html->NotManagerAlert(); 
+$total  = $App->Call( "Commerce" , "Managers" , "Debtors" , 'total' );
+$shop = isset( $shop ) ? $shop : $App->input->shid ;
+if( is_array( $shop ) && isset( $shop[ 'code' ] ) )
+	$shop = $shop[ 'code' ];
+$bLink = "Commerce/Managers/my-shops/my-debtors/list/shid:" . $shop ; ?>
+<div class="col-xs-12 padding10">
+
+	<h3 style="padding:20px;margin:5px;"
+		 class="col-xs-10 col-xs-push-1 alert-info">
+
+		<?php $Html->pTranslate( 'Total Demands' ); ?>
+
+	</h3>
+
+	<div class="col-xs-10 col-xs-push-1 text-center"
+		style="padding:0px;margin:5px;margin-top:20px;">
+		<h3 style="padding:20px;margin:0px;" class="alert-success">
+			<?php print Ted\HumanPrice( $total ) . " " ;
+			$Html->pTranslate( '$' ); ?>
+		</h3>
+	</div>
+
+	<div class="col-xs-12 padding5" style="margin-top:15px;">
+
+		<a href="<?php $Html->EchoLink( $bLink ); ?>" 
+			class="btn btn-lg btn-primary">
+
+			 &#160; <?php $Html->pTranslate( 'Go Back' ); ?> &#160; 
+
+		</a>
+
+	</div>
+
+</div>

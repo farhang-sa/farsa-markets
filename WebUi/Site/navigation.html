@@ -1,0 +1,69 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ; 
+$cNav = $Html->HtmlExists( [ "Apps" , FallonAppName , "navigation" ] ) ;
+if( FallonAppName !== "Markets" && $cNav )
+    return $Html->Call( "Apps" , FallonAppName , "navigation" ); ?>
+<nav class="col-xs-12 align_center padding0" style="top:0px;position:absolute;z-index:9999999;">
+	<header class="col-xs-12 main-header clearfix padding0" style="z-index:999;">
+		<div class="col-xs-12 nav-bar sticky-bar padding0">
+
+			<div class="row">
+				<div class="col-md-3">
+					<figure class="logo"style="padding:5px;color:red;direction:ltr;">
+                        <a href="<?php $Html->EchoLink('Site/about-us');?>" style="padding:5px;font-size:1.6em;" title="about us"><span class="glyphicon glyphicon-info-sign"></span></a>
+                        &#160; &#160; 
+                        <a href="#feedback" style="padding:5px;font-size:1.6em;" title="write feedback"><span class="glyphicon glyphicon-send"></span></a>
+					</figure>
+				</div>
+				<div class="col-md-9 <?php $Html->EchoDir() ; ?>">
+					<nav class="main-nav clearfix <?php print $App->User("set_language") ;?>" style="z-index:9999999;">
+						<ul class="clean-list to-right">
+							<?php $Html->FallonCall( "Site" , "navigation" ); 
+                            // Load Gaps Tools And Functions
+                            if( $App->User( "admin" ) ) : // SchoolPC Admin ?>
+                            <li class="<?php $Html->isActive( 'Apps' ); ?>">
+                                <a href="<?php $Html->EchoLink('Apps/Admins');?>">
+                                    مدیریت برنامه ها
+                                </a>
+                                <?php $Html->Call( 'Site' , 'gaps_navigation' ); ?>
+                            </li>
+                            <?php endif;
+                            if( $App->User()->isManager() ) : ?>
+							<li class="<?php $Html->isActive( 'shop' ); ?>">
+								<a href="<?php $Html->EchoLink('Commerce/Managers');?>">
+									پنل فروشگاه
+								</a>
+								<ul>
+									<li>
+										<a href="<?php $Html->EchoLink('Commerce/Managers/my-malls');?>">
+											پاساژهای من
+										</a>
+									</li>
+									<li>
+										<a href="<?php $Html->EchoLink( 'Commerce/Managers/my-malls/send' ) ; ?>">
+											ساخت پاساژ جدید
+										</a>
+									</li>
+									<li>
+										<a href="<?php $Html->EchoLink('Commerce/Managers/my-shops');?>">
+											فروشگاه های من
+										</a>
+									</li>
+									<li>
+										<a href="<?php $Html->EchoLink( 'Commerce/Managers/my-shops/send' ) ; ?>">
+											ساخت فروشگاه جدید
+										</a>
+									</li>
+								</ul>
+							</li>
+							<?php endif; ?>
+							<li class="<?php $Html->isActive( 'index' ); ?>">
+								<a href="<?php print $App->AppURL(); ?>">صفحه اصلی</a>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+	</header>
+</nav>

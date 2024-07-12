@@ -1,0 +1,50 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ; 
+$App->input->pid = $App->input->pid ? $App->input->pid : $App->input->edit ;
+$Product = $App->COMMERCE()->ExecuteDataActionsUnlimited( 
+		"commerce_temps" , [ '*' ] , [ 'code' => $App->input->pid ] , null , false );
+if ( ! $Product ) // Normal?
+	$Html->FallonCall( 'commerce' , 'managers' , 'products' , 
+	    'edit' , [ 'Definition' => [ 'template' => [ 'hidden' ] ] ] );
+else { 
+
+	if( $App->input->{'edit-product'} ) : //Execute Edit !
+	    
+	    if( ! isset( $Product[ 'shop' ] ) && isset( $Product[ 'discussion' ] ) )
+	        $Product[ 'shop' ]   = $Product[ 'discussion' ] ;
+	    if( ! isset( $Product[ 'parent' ] ) && isset( $Product[ 'category' ] ) )
+	        $Product[ 'parent' ] = $Product[ 'category' ] ;
+	    
+	    if( ! isset( $Product[ 'discussion' ] ) && isset( $Product[ 'shop' ] ) )
+	        $Product[ 'discussion' ]   = $Product[ 'shop' ] ;
+	    if( ! isset( $Product[ 'category' ] ) && isset( $Product[ 'parent' ] ) )
+	        $Product[ 'category' ] = $Product[ 'parent' ] ;
+	        
+	    $App->input->{'edit-product'}[ 'writer' ] = $Product[ 'writer' ];
+	    $App->input->{'edit-product'}[ 'shop' ]   = $Product[ 'discussion' ];
+	    
+	    print '<div class="hidden" style="display:none;">' ;
+	    $Html->FallonCall( 'commerce' , 'managers' , 'products' , 'edit' , 
+		    [ 'Product' => $Product , 'shop' => $App->COMMERCE()->PullElement( $Product['discussion'] ) , 
+			    'Definition' => [ 'input_product_template' => [ 'hidden' , '1' , '1' ] ] ] ); 
+	    print '</div>';
+	    // Clear Edit
+	    $App->input->{'edit-product'} = null;
+    	// Reload !
+	    $Product = $App->COMMERCE()->ExecuteDataActionsUnlimited( 
+			"commerce_temps" , [ '*' ] , [ 'code' => $App->input->pid ] , null , false );
+			
+	    if( ! isset( $Product[ 'shop' ] ) && isset( $Product[ 'discussion' ] ) )
+	        $Product[ 'shop' ]   = $Product[ 'discussion' ] ;
+	    if( ! isset( $Product[ 'parent' ] ) && isset( $Product[ 'category' ] ) )
+	        $Product[ 'parent' ] = $Product[ 'category' ] ;
+	    
+	    if( ! isset( $Product[ 'discussion' ] ) && isset( $Product[ 'shop' ] ) )
+	        $Product[ 'discussion' ]   = $Product[ 'shop' ] ;
+	    if( ! isset( $Product[ 'category' ] ) && isset( $Product[ 'parent' ] ) )
+	        $Product[ 'category' ] = $Product[ 'parent' ] ;
+	        
+   	endif;
+    $Html->FallonCall( 'commerce' , 'managers' , 'products' , 'edit' , 
+	    [ 'Product' => $Product , 'shop' => $App->COMMERCE()->PullElement( $Product['discussion'] ) , 
+		    'Definition' => [ 'input_product_template' => [ 'hidden' , '1' , '1' ] ] ] ); 
+} ?>
