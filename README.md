@@ -1,4 +1,4 @@
-[این متن به فارسی](https://github.com/farhang-sa/farsa-markets/README-fa.md)
+[این متن به فارسی](https://github.com/farhang-sa/farsa-markets/blob/main/README-fa.md)
 ### introduction
 Markets is a PHP-MySql marketing platform with HTML5-Android/Java user interface. it took me 6 months to create the php/mysql backend &&& html5 frontend &&& 3 different types of android apps ( 1 client and 2 for managers and operators). in this repo you can only see parts of it's php source code. main code is ofcourse not here :)). it can be used for various scenarios. a single shop, an small multi-store shopping system, a large marketplace with diffrest kind of shops and delivery scenarios. in summry its the ultimate shopping platform.
 
