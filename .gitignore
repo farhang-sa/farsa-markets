@@ -16,9 +16,9 @@ AppData
 *.webm
 *.mp3
 
-# for Markets 
+# js sources location
 /WebUi/Web
-/WebUi/Files
+/WebUi/Files/src
 01_override-sample-code
 
 # dependencies

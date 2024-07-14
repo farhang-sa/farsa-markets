@@ -1,0 +1,70 @@
+/************************************
+*	In The Name Of Allah			*
+*	By Farhang Saeedi				*
+*	mail:Saeedi.Farhang@gmail.com 	*
+*	Phone:09368719623				*
+*************************************/
+
+/* this is Main CSS Style */
+
+body {
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: white ;
+	/*background-image: url('../img/body-box.jpg');*/
+	font-size:16.5px;
+}
+
+div{
+	
+}
+
+a{
+	font-size: 17px;
+	font-style: oblique;
+	color:blue;
+}
+
+a:hover{
+	font-size: 18px;
+}
+
+.col-fixed {
+    right:5%;
+    left:5%;
+}
+
+@media screen and (max-width:450px){ /* XS */
+ 
+    .col-fixed {
+        right:2.5%;
+        left:2.5%;
+    }   
+}
+
+@media screen and (max-width:767px){ /* XS */
+ 
+    .col-fixed {
+        right:7.5%;
+        left:7.5%;
+    }   
+}
+
+@media screen and (min-width:992px){ /* SM */
+    .col-fixed {
+        right:25%;
+        left:25%;
+    }
+}
+
+
+@media screen and (min-width:1200px){ /* MD */
+    .col-fixed {
+        right:33%;
+        left:33%;
+    }
+}
+
+
+

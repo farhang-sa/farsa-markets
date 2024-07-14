@@ -72,15 +72,12 @@ $html->Css( 'fallon.css' );
 $html->Css( 'Markets.css' );
 ///
 $html->tag2Head("<script> SiteHttp = '" . TWeb_Index . "' ; </script>");
-$html->js2head( 'respond.js' );
 $html->js2head( 'jquery.min.js' );
-$html->js2head( 'fallon.js' );
-$html->js2head( 'Markets.base.js' );
+$html->js2head( 'markets.min.js' );
 ///
-$html->js2body( 'bootstrap.min.js' );
+$html->js2head( 'bootstrap.min.js' );
 $html->js2body( 'modernizr.js' );
 $html->js2body( 'plugins.js' );
 $html->js2body( 'options.js' );
-$html->js2body( 'Markets.js' );
 
 ?>

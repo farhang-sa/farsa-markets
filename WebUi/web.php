@@ -192,7 +192,9 @@ $div = '<div class="col-xs-12 padding2"> &#160; </div>';
 
             <div class="col-xs-12 content padding0">
 		    
-		    <?php $settings = $App->SYSTEM()->PullItems( "system" , "Clients" , "Settings" );
+		    <?php Ted\Ted::info();
+
+            $settings = $App->SYSTEM()->PullItems( "system" , "Clients" , "Settings" );
 		    $settings = isset( $settings[ "settings" ] ) ? $settings[ "settings" ] : array() ;
 		    
 		    // Messages
