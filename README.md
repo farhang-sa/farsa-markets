@@ -126,3 +126,19 @@ Markets is a PHP-MySql marketing platform with HTML5-Android/Java user interface
     </tr>
   </tbody>
 </table>
+
+### Seller Accounting( Only Windows )
+<table>
+  <tbody>
+    <tr>
+      <td>
+        i used a windows open-source (C#) accounting project and modified it to work with Markets system. <br />
+        upon first run, it will ask you to connect to Markets server ( to backend) and login, just like Android apps.<br /> 
+        then it will show your shops to select one of them to connect and manage.<br /> 
+        when you select your shop, it will receive all sections/products/etc of you shop and save them in its own database.<br /> 
+        its a bidirectional connection between this software and Markets PHP backend.
+      </td>
+      <td><img src='https://i.postimg.cc/yYXSKQxp/hesabdari.png' /></td>
+    </tr>
+  </tbody>
+</table>
