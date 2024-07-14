@@ -5,6 +5,9 @@ AppData
 /secrets.php
 /config.php
 /Classes/*.php
+/me.txt
+/log.txt
+/error*
 
 # media
 *.exe

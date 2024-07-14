@@ -4,9 +4,9 @@ define( 'TExec' , microtime() ); // PHP Script Execution Started
 define( 'TPath_DS' , DIRECTORY_SEPARATOR );
 define( 'TPath_Root' , realpath( __DIR__ ) );
 defined( 'TPath_Index' ) OR define( 'TPath_Index' , basename( __FILE__ ) );
-define( 'TPath_Base' , dirname ( dirname ( TPath_Root ) ) . TPath_DS . "TedBase_v1.1" );
-define( 'TPath_Fallon' , dirname ( dirname ( TPath_Root ) ) . TPath_DS . "Fallon_DSFramework_v2.1" );
-define( 'TPath_GapsManager' , dirname ( TPath_Root ) . TPath_DS . "Gaps_v1.1" );
+define( 'TPath_Base' , dirname ( dirname ( TPath_Root ) ) . TPath_DS . "TedBase_v2" );
+define( 'TPath_Fallon' , dirname ( dirname ( TPath_Root ) ) . TPath_DS . "Fallon_DSFramework_v3" );
+define( 'TPath_GapsManager' , dirname ( dirname ( TPath_Root ) ) . TPath_DS . "Gaps_v1" );
 define( 'TPath_AppRoot' , TPath_Root ) ;
 define( 'TPath_Default_AppData' , TPath_AppRoot . TPath_DS . "AppData" );
 @date_default_timezone_set( 'UTC' );

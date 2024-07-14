@@ -137,11 +137,20 @@ $div = '<div class="col-xs-12 padding2"> &#160; </div>';
 	<body style="height:100%;padding:0px;"
 	    class='col-xs-12 col-sm-10 col-sm-push-1 col-md-8 col-md-push-2 rtl text-center main-body'>
 	    
-	    <?php if( ! $login || ! $profile ):
+	    <?php if( ! $login || ! $profile ): ?>
+
+            <div class="col-xs-12 col-sm-10 col-sm-push-1 col-md-8 col-md-push-2 content-box text-center"
+                style="padding:5px;margin-top:60px;">
+
+                <div class="col-xs-12 content padding0">
+
+    	           <?php $Html->Call( 'web' , 'setup' ); ?>
+
+                </div>
+
+            </div>
 	        
-	        $Html->Call( 'web' , 'setup' );
-	        
-	    else : // Show Navigation ?>
+	    <?php else : // Show Navigation ?>
 	    
 	    <div class='col-xs-12 padding0' 
 	        style='position:fixed;top:0px;left:0px;height:60px;z-index:99;background-color:white;'>
@@ -180,9 +189,11 @@ $div = '<div class="col-xs-12 padding2"> &#160; </div>';
 
 		<article class="col-xs-12 col-sm-10 col-sm-push-1 col-md-8 col-md-push-2 content-box text-center"
 			style="padding:5px;margin-top:60px;">
+
+            <div class="col-xs-12 content padding0">
 		    
 		    <?php $settings = $App->SYSTEM()->PullItems( "system" , "Clients" , "Settings" );
-		    $settings = $settings[ "settings" ];
+		    $settings = isset( $settings[ "settings" ] ) ? $settings[ "settings" ] : array() ;
 		    
 		    // Messages
 		    $messages = "markets_clients_alarm_messages" ;
@@ -362,6 +373,8 @@ $div = '<div class="col-xs-12 padding2"> &#160; </div>';
                 <?php endif; ?>
 			    
 			</div>
+
+            </div>
 		
 		</article>
 		

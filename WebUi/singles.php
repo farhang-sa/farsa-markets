@@ -178,11 +178,20 @@ $div = '<div class="col-xs-12 padding2"> &#160; </div>';
             
         </div>
         
-        <?php elseif( ! $login || ! $profile ) :
+        <?php elseif( ! $login || ! $profile ) : ?>
+
+        <div class="col-xs-12 content-box align_center padding0" style='margin-top:60px;min-height:90%;'>
+
+            <div class="col-xs-12 col-sm-10 col-sm-push-1 col-md-10 col-md-push-1 content padding0" 
+                id="home" style='height:100%;'>
+                
+	        <?php $Html->Call( 'web' , 'setup' ); ?>
+
+            </div>
+
+        </div>
 	        
-	        $Html->Call( 'web' , 'setup' );
-	        
-	    else : // Show Navigation ?>
+	    <?php else : // Show Navigation ?>
 	    
 	    <div class='col-xs-12 padding0' 
 	        style='position:fixed;top:0px;left:0px;height:60px;z-index:99;background-color:white;'>
