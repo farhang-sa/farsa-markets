@@ -1,8 +1,7 @@
-<?php $img = "https://ftfin.ir/files/images/pp.png" ; ?>
+<?php $img = $Html->GetImg( 'intro.png' ) ;
+if( stristr( TWeb_Domain , 'metrookala.ir' ) !== false )
+    return $Html->Call( 'MetrooKala' , 'home.html' ); ?>
 <div class="col-xs-12 padding10 col-sm-8 col-sm-push-2">
-    
-    <?php if( stristr( TWeb_Domain , 'ftfin.ir' ) !== false ) : ?>
-    
     <div class="col-xs-12 padding5">
         <img src="<?php print $img; ?>" style="border:2px solid black"
             class="img img-responsive img-thumbnail" />
@@ -12,59 +11,14 @@
             Markets : پلتفرم مارکتپلیس و فروش آنلاین کالا
         </h3>
     </div>
-    <div class="col-xs-12 text-center padding10">
-        
-        <a href="<?php $Html->EchoLink( 'User' ); ?>"
-        <div class="col-xs-12 col-sm-8 col-sm-push-2 col-md-4 col-md-push-4">
-            <button class="col-xs-12 btn btn-lg btn-success input-lg padding10"> ورود مدیران </button>
+    <div class="col-xs-12 text-center padding10">   
+        <div class='col-xs-12 col-sm-8 col-sm-push-2'>     
+            <a href="<?php $Html->EchoLink( 'User' ); ?>" data-relocate='true'>
+                <button class="btn btn-lg btn-success input-lg padding10"> ورود مدیران </button>
+            </a> 
+            <a href="<?php $Html->EchoLink( '/' ); ?>" data-relocate='true'>
+                <button class="btn btn-lg btn-success input-lg padding10"> ورود کاربران </button>
+            </a>
         </div>
-        </a>
-        
     </div>
-    
-    <?php else : ?>
-    
-    <div class="col-xs-12 padding8 slogan-view" style="padding:25px;margin:5px 0px 20px 0px;">
-          
-        <h3 class="alert alert-info padding9" style="margin:0px;">
-        
-            مترو کالا 
-            <br/>
-            ارزانسرای دیجیتال شهر 
-            
-        </h3>
-          
-    </div>
-      
-    <div class="col-xs-12 padding8 logo-view">
-          
-        <img style="width:350px;height:350px;border:5px solid darkblue;margin-top:20px;"
-	        src="https://metrookala.ir/assets/favicon.png" class="img img-circle img-responsive img-thumbnail"  />
-          
-    </div>
-      
-    <div class="col-xs-12 col-sm-8 col-sm-push-2 col-md-6 col-md-push-3 padding8 start-view" style="padding:25px;margin-top:20px;">
-          
-        <div class="col-xs-6 padding9">
-        <a href="<?php $Html->EchoLink( 'User' ); ?>">
-            <button class="col-xs-12 btn btn-lg btn-primary input-lg padding10"> ورود مدیران </button>
-        </a>
-        </div>
-        
-        <div class="col-xs-6 padding9">
-        <?php if( defined( 'shid' ) ) : ?>
-        <a href="https://golestan.metrookala.ir/markets/<?php print str_ireplace( 'index_Single_' , 'api_web_singles_' , TPath_Index ) ; ?>">
-            <button class="col-xs-12 btn btn-lg btn-success input-lg padding10"> ورود کاربران </button>
-        </a>
-        <?php else :?>
-        <a href="https://golestan.metrookala.ir/markets/api_web.php">
-            <button class="col-xs-12 btn btn-lg btn-success input-lg padding10"> ورود کاربران </button>
-        </a>
-        <?php endif; ?>
-        </div>
-      
-    </div>
-    
-    <?php endif; ?>
-    
 </div>

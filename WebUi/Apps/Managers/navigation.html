@@ -1,9 +1,5 @@
-<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ; 
-// Custom Navigation Check
-$cNav = $Html->HtmlExists( [ "Apps" , FallonAppName , "navigation" ] ) ;
-if( FallonAppName !== "Markets" && $cNav )
-    return $Html->Call( "Apps" , FallonAppName , "navigation" ); ?>
-<nav class="col-xs-12 align_center padding0" style="top:0px;position:absolute;z-index:9999999;">
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ; ?>
+<nav class="align_center padding0" style="width:95%;top:0px;position:absolute;z-index:9999999;">
 	<header class="col-xs-12 main-header clearfix padding0" style="z-index:999;">
 		<div class="col-xs-12 nav-bar sticky-bar padding0">
 

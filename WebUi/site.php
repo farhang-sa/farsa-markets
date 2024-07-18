@@ -3,8 +3,6 @@ $path = implode( "-" , $App->AppHistory() ); ?><!doctype html>
 <html lang="en" class="no-js">
 	<head>
 		<?php print $this->RenderHead(); ?>
-        <script src="https://cdn.jsdelivr.net/npm/ol@v9.1.0/dist/ol.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.1.0/ol.css">
 	</head>
 	<body class='col-xs-12 <?php $Html->EchoDir() ; ?>'>
 
@@ -42,7 +40,13 @@ $path = implode( "-" , $App->AppHistory() ); ?><!doctype html>
 		<div class="col-xs-12 padding0 footer-box align_center">
 		
 		<?php $Html->Call( 'Site' , 'Footer' ); ?>
-		
+
+		<?php if( defined( 'debug_mode' ) && debug_mode ) : ?>
+		<div class="col-xs-12 padding0 text-center">
+			Execution : <?php print ( microtime( true ) - TExec ) ; ?> ms
+		</div>
+		<?php endif;?>
+
 		</div>
 	
 		<?php print $this->RenderBody(); ?>

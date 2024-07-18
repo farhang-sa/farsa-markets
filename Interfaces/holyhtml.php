@@ -1,10 +1,8 @@
 <?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename(  __FILE__ ) ) ;
 
-Ted\Import( 'HtmlInterface' , GapsManager_Root );
+Ted\Import( 'interfaces.holyhtml' , GapsManager_Root );
 
-class Markets_holyhtml_Interface extends Gaps_Html_Interface { 
-
-	private static $SiteNavActive = false ;
+class Markets_holyhtml_Interface extends GapsManager_holyhtml_Interface { 
 
 	public function Respond( $directRespond = true ){
 
@@ -16,15 +14,13 @@ class Markets_holyhtml_Interface extends Gaps_Html_Interface {
 			$this->Root = $HtmlUI ? $HtmlUI->Root() : $this->Root ;
 
 		// Execute Init.php For SiteUI
-		$this->ExecInitFiles( $this->Root );
+		$this->ExecInitFiles( $this->Root , true );
 
 		// Execute Init.php For HtmlUI
 		$HtmlUI->ExecInitFiles( $HtmlUI->Root() );
 		
 		$HtmlUI->Connect( false );
 
-		if ( ! Ted\IsCli( ) ) header( 'Content-Type: text/html; charset=UTF-8' );
-			
 		@ob_start(); // Start Output Buffrer
 		@ob_clean(); // Cleaning Output Buffrer
 
@@ -39,7 +35,7 @@ class Markets_holyhtml_Interface extends Gaps_Html_Interface {
 			
 		print "\t</head>" . PHP_EOL ;
 		
-		print "\t<body class='TedEngineBody padding10'>" . PHP_EOL ;
+		print "\t<body class='MarketsBody'>" . PHP_EOL ;
 		
 			print $this->RenderComponent();
 			

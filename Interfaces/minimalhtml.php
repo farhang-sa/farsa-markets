@@ -1,10 +1,8 @@
 <?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename(  __FILE__ ) ) ;
 
-Ted\Import( 'HtmlInterface' , GapsManager_Root );
+Ted\Import( 'interfaces.minimalhtml' , GapsManager_Root );
 
-class Markets_minimalhtml_Interface extends Gaps_Html_Interface { 
-
-	private static $SiteNavActive = false ;
+class Markets_minimalhtml_Interface extends GapsManager_minimalhtml_Interface { 
 
 	public function Respond( $directRespond = true ){
 
@@ -16,22 +14,20 @@ class Markets_minimalhtml_Interface extends Gaps_Html_Interface {
 			$this->Root = $HtmlUI ? $HtmlUI->Root() : $this->Root ;
 
 		// Execute Init.php For SiteUI
-		$this->ExecInitFiles( $this->Root );
+		$this->ExecInitFiles( $this->Root , true );
 
 		// Execute Init.php For HtmlUI
 		$HtmlUI->ExecInitFiles( $HtmlUI->Root() );
 		
 		$HtmlUI->Connect( false );
 
-		if ( ! Ted\IsCli( ) ) header( 'Content-Type: text/html; charset=UTF-8' );
-			
 		@ob_start(); // Start Output Buffrer
 		@ob_clean(); // Cleaning Output Buffrer
 
 		// Print The Document In Simple Way
-		print "<!doctype html>" . PHP_EOL ;
+		print '<!doctype html>' . PHP_EOL ;
 		
-		print "<html>" . PHP_EOL ;
+		print '<html>' . PHP_EOL ;
 		
 		print "\t<head>" . PHP_EOL ;
 		
@@ -39,24 +35,28 @@ class Markets_minimalhtml_Interface extends Gaps_Html_Interface {
 			
 		print "\t</head>" . PHP_EOL ;
 		
-		print "\t<body class='TedEngineBody'>" . PHP_EOL ;
+		print "\t<body class='MarketsBody'>" . PHP_EOL ;
 		
 		    print "<div class='col-xs-12 padding10'> </div>";
 			
-			print "<section class='col-xs-12 padding0 content-box'>" ;
-			print "<div class='col-xs-12 padding0 content text-center'>";
+			$this->pDiv( 'col-12 col-xs-12 padding0 content-box' ) ;
 
-			print $this->RenderComponent();
+				$this->pDiv( 'col-12 col-xs-12 padding0 content text-center' );
 
-			print "</div></section>";
+				print $this->RenderComponent();
+
+				$this->pEndDiv();
+
+			$this->pEndDiv();
 			
 			print $this->RenderBody();
 
+			// difference with holyhtml
 			$this->Call( 'Site' , 'Footer' );
 			
 		print "\t</body>" . PHP_EOL ;
 		
-		print "</html>";	
+		print '</html>';	
 			
 		$Html = ob_get_contents() ;
 

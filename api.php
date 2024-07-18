@@ -1,6 +1,7 @@
 <?php
 
-define( 'TExec' , microtime() ); // PHP Script Execution Started
+define( 'debug_mode' , 1 );
+define( 'TExec' , microtime( true ) ); // PHP Script Execution Started
 define( 'TPath_DS' , DIRECTORY_SEPARATOR );
 define( 'TPath_Root' , realpath( __DIR__ ) );
 defined( 'TPath_Index' ) OR define( 'TPath_Index' , basename( __FILE__ ) );

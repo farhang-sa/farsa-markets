@@ -6,11 +6,13 @@ class Markets_Site_Interface extends Gaps_Site_Interface {
 
     public function Respond( $directRespond = true ){ 
         
+        // ClientsSingles
         if( defined( 'Markets_Web_api' ) && defined( 'shid' ) )
-            $this->SiteLoadersList = [ "singles.php" ];
+            $this->setController( [ "singles.php" ] );
         
+        // Clients - Managers
         else if( defined( 'Markets_Web_api' ) )
-            $this->SiteLoadersList = [ "web.php" ];
+            $this->setController( [ "clients.php" ] );
             
         parent::Respond( $directRespond);
         

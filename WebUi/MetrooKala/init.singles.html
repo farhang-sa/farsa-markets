@@ -1,0 +1,18 @@
+<?php defined( 'Fallon_Root' ) or die( 'Access Denied : ' . basename( __FILE__ ) ) ;
+
+// For Single Shop Apps 
+
+$Manager  = $App->getAppManager( FallonAppName );
+$settings = $Manager->getSettings();
+
+if( isset( $settings[ 'markets_clients_single_app_title' ] ) )
+    $html->title( $settings[ 'markets_clients_single_app_title' ] );
+else $html->title( $Html->Translate( 'MetrooKala - Web' ) );
+
+if( isset( $settings[ 'markets_clients_single_app_icon' ] ) )
+    $html->ico( $settings[ 'markets_clients_single_app_icon' ] ) ;
+else $html->ico( 'https://metrookala.ir/assets/favicon.ico' ) ;
+
+if( isset( $settings[ 'markets_clients_single_app_title' ] ) )
+    $html->keyword( 'متروکالا , مترو کالا , MetrooKala , Metroo Kala , ارزانسرا , خوار و بار , لبنیات' . ',' . $settings[ 'markets_clients_single_app_title' ] );
+else $html->keyword( 'متروکالا , مترو کالا , MetrooKala , Metroo Kala , ارزانسرا , خوار و بار , لبنیات' );

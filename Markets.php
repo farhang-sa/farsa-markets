@@ -11,6 +11,7 @@ use Fallon\DataStructured_Framework_v2 As FallonFrameWork ;
 Ted\Import( "Gaps" , TPath_GapsManager );
 Ted\Import( 'Classes.MarketsHandler' , Markets_Root );
 
+#[AllowDynamicProperties]
 class Markets extends GapsManager {
 		
 	public $MarketPlaceAppId = 'MetrooKala' ;

@@ -19,6 +19,7 @@ AppData
 # js sources location
 /WebUi/Web
 /WebUi/Files/src
+/WebUi/MatrooKala
 01_override-sample-code
 
 # dependencies
